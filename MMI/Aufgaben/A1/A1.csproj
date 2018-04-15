@@ -48,5 +48,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SampleData\Graph1.txt" />
+    <Content Include="SampleData\Graph2.txt" />
+    <Content Include="SampleData\Graph3.txt" />
+    <Content Include="SampleData\Graph4.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
