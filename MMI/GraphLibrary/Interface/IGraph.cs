@@ -15,14 +15,18 @@ namespace GraphLibrary.Interface
 
         // Vertices
 
-        // Directed-Flag
+        // Directed-Flag, nur Getter, Setzen in Konstruktor
+
+        // string id
 
 
 
         /*   Methoden   */
 
-        // AddFromTo
+        // AddEdge (From, To)
 
-        // AddEdge
+        // AddVertex
+
+        // ResetSeen
     }
 }

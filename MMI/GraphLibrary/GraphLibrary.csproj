@@ -41,11 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\Edge.cs" />
-    <Compile Include="DataModel\Vertice.cs" />
+    <Compile Include="DataModel\Vertex.cs" />
     <Compile Include="Interface\IEdge.cs" />
     <Compile Include="Interface\IGraph.cs" />
-    <Compile Include="Interface\IVertice.cs" />
-    <Compile Include="IO\GraphFactory.cs" />
+    <Compile Include="Interface\IVertex.cs" />
+    <Compile Include="Factory\GraphFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
