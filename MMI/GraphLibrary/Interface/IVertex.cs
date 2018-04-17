@@ -21,10 +21,19 @@ namespace GraphLibrary.Interface
         /// <summary>
         /// Identifizierung dieses Knotens
         /// </summary>
-        string Identifier { get; set; }
+        string Identifier { get; }
 
 
+        /// <summary>
+        /// Nachbarknoten
+        /// </summary>
+        List<IVertex> Neighbours { get; }
 
+
+        /// <summary>
+        /// Kanten an diesem Knoten
+        /// </summary>
+        List<IEdge> Edges { get; }
 
         #endregion Properties
 
@@ -32,20 +41,14 @@ namespace GraphLibrary.Interface
 
         #region Methods
 
+        /// <summary>
+        /// Hinzufügen einer Kante, die mit diesem Knoten verbunden ist.
+        /// Dabei die Neighbours aktualisieren.
+        /// </summary>
+        /// <param name="edge">neue Kante</param>
+        void AddEdge(IEdge edge);
+
 
         #endregion Methods
-
-        
-
-        // Neighbours (Nachbarknoten)
-
-        // Edges (Kanten an mir dran)
-        
-
-
-
-        /*   Methoden   */
-
-        // AddEdge
     }
 }

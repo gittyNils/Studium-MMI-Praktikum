@@ -23,18 +23,22 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Gibt an, ob die Kante gerichtet ist
         /// </summary>
-        public bool Directed { get; set; }
-
+        public bool Directed { get; private set; }
+        
+        /// <summary>
+        /// Identifizierung dieses Knotens
+        /// </summary>
+        public string Identifier { get { return $"{FromVertex} -> {ToVertex}"; } }
 
         /// <summary>
-        /// Kante startet an diesem Vertex
+        /// Kante startet an diesem Knoten
         /// </summary>
-        public IVertex FromVertex { get; set; }
+        public IVertex FromVertex { get; private set; }
 
         /// <summary>
-        /// Kante endet an diesem Vertex
+        /// Kante endet an diesem Knoten
         /// </summary>
-        public IVertex ToVertex { get; set; }
+        public IVertex ToVertex { get; private set; }
 
 
         /// <summary>
@@ -47,10 +51,17 @@ namespace GraphLibrary.DataModel
         #region Constructor
 
         /// <summary>
-        /// Standard-Konstruktor
+        /// Konstruktor
         /// </summary>
-        public Edge()
+        /// <param name="from">Von welchem Knoten</param>
+        /// <param name="to">zu welchem Knoten</param>
+        /// <param name="isDirected">Flag, ob gerichtete Kante</param>
+        public Edge(IVertex from, IVertex to, bool isDirected)
         {
+            FromVertex = from;
+            ToVertex = to;
+            Directed = isDirected;
+
             Costs = new Dictionary<string, int>();
         }
 
@@ -62,7 +73,7 @@ namespace GraphLibrary.DataModel
         #region Methods
 
         /// <summary>
-        /// Liefert zum übergebenen Vertex den der anderen Seite der Kante.
+        /// Liefert zum übergebenen Knoten den der anderen Seite der Kante.
         /// </summary>
         /// <param name="vert"></param>
         /// <returns>Null, wenn vert nicht zur Kante gehört.</returns>
@@ -78,6 +89,11 @@ namespace GraphLibrary.DataModel
             {
                 ret = FromVertex;
             }
+            else
+            {
+                // Exception Werfen. 
+                throw new ArgumentException($"Vertex={vert} not Part of Edge={this}");
+            }
 
             return ret;
         }
@@ -89,7 +105,7 @@ namespace GraphLibrary.DataModel
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{FromVertex} -> {ToVertex}";
+            return $"Edge={Identifier}";
         }
 
 

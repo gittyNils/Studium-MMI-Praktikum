@@ -11,14 +11,34 @@ namespace GraphLibrary.Interface
     /// </summary>
     public interface IGraph
     {
+        #region Properties
+
+        /// <summary>
+        /// Identifizierung dieses Graphen
+        /// </summary>
+        string Identifier { get; }
+
+
+        #endregion Properties
+
+
         // Edges
 
         // Vertices
 
         // Directed-Flag, nur Getter, Setzen in Konstruktor
 
-        // string id
 
+        #region Methods
+
+        /// <summary>
+        /// Seen-Flag in Knoten und Kanten zurücksetzen
+        /// </summary>
+        void ResetSeen();
+
+
+
+        #endregion Methods
 
 
         /*   Methoden   */
@@ -26,7 +46,6 @@ namespace GraphLibrary.Interface
         // AddEdge (From, To)
 
         // AddVertex
-
-        // ResetSeen
+        
     }
 }

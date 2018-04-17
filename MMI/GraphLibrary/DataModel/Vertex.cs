@@ -22,8 +22,19 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Identifizierung dieses Knotens
         /// </summary>
-        public string Identifier { get; set; }
+        public string Identifier { get; private set; }
 
+
+        /// <summary>
+        /// Nachbarknoten
+        /// </summary>
+        public List<IVertex> Neighbours { get; private set; }
+
+
+        /// <summary>
+        /// Kanten an diesem Knoten
+        /// </summary>
+        public List<IEdge> Edges { get; private set; }
 
         #endregion Properties
 
@@ -46,6 +57,25 @@ namespace GraphLibrary.DataModel
         #region Methods
 
 
+        /// <summary>
+        /// Hinzufügen einer Kante, die mit diesem Knoten verbunden ist.
+        /// Dabei die Neighbours aktualisieren.
+        /// </summary>
+        /// <param name="edge">neue Kante</param>
+        public void AddEdge(IEdge edge)
+        {
+            Edges.Add(edge);
+
+            // Nachbarn ggf. aktualisieren
+            // Suche dem anderen Ende der Kante
+            IVertex other = edge.GetOtherVertex(this);
+
+            if (!Neighbours.Contains(other))
+            {
+                Neighbours.Add(other);
+            }
+        }
+
 
         /// <summary>
         /// Überschriebene ToString-Methode
@@ -53,8 +83,9 @@ namespace GraphLibrary.DataModel
         /// <returns></returns>
         public override string ToString()
         {
-            return Identifier;
+            return $"Vertex={Identifier}";
         }
+
 
         #endregion Methods
 

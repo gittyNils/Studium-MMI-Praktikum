@@ -22,18 +22,24 @@ namespace GraphLibrary.Interface
         /// <summary>
         /// Gibt an, ob die Kante gerichtet ist
         /// </summary>
-        bool Directed { get; set; }
+        bool Directed { get; }
 
 
         /// <summary>
-        /// Kante startet an diesem Vertex
+        /// Identifizierung dieser Kante
         /// </summary>
-        IVertex FromVertex { get; set; }
+        string Identifier { get; }
+
 
         /// <summary>
-        /// Kante endet an diesem Vertex
+        /// Kante startet an diesem Knoten
         /// </summary>
-        IVertex ToVertex { get; set; }
+        IVertex FromVertex { get; }
+
+        /// <summary>
+        /// Kante endet an diesem Knoten
+        /// </summary>
+        IVertex ToVertex { get; }
 
         
         /// <summary>
@@ -47,7 +53,7 @@ namespace GraphLibrary.Interface
         #region Methods
 
         /// <summary>
-        /// Liefert zum übergebenen Vertex den der anderen Seite der Kante.
+        /// Liefert zum übergebenen Knoten den der anderen Seite der Kante.
         /// </summary>
         /// <param name="vert"></param>
         /// <returns>Null, wenn vert nicht zur Kante gehört.</returns>
