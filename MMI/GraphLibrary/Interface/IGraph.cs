@@ -18,16 +18,23 @@ namespace GraphLibrary.Interface
         /// </summary>
         string Identifier { get; }
 
+        /// <summary>
+        /// Gibt an, ob die Kante gerichtet ist
+        /// </summary>
+        bool Directed { get; }
+
+        /// <summary>
+        /// Alle Kanten des Graphen
+        /// </summary>
+        Dictionary<string, IEdge> Edges { get; }
+
+        /// <summary>
+        /// Alle Knoten des Graphen
+        /// </summary>
+        Dictionary<string, IVertex> Vertices { get; }
 
         #endregion Properties
-
-
-        // Edges
-
-        // Vertices
-
-        // Directed-Flag, nur Getter, Setzen in Konstruktor
-
+        
 
         #region Methods
 
@@ -36,16 +43,21 @@ namespace GraphLibrary.Interface
         /// </summary>
         void ResetSeen();
 
+        /// <summary>
+        /// Hinzufügen einer Kante von einem Knoten zum anderen
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        void AddEdge(IVertex from, IVertex to);
 
 
-        #endregion Methods
+        /// <summary>
+        /// Hinzufügen eines Knoten mit Id
+        /// </summary>
+        /// <param name="identifier"></param>
+        void AddVertex(string identifier);
 
 
-        /*   Methoden   */
-
-        // AddEdge (From, To)
-
-        // AddVertex
-        
+        #endregion Methods        
     }
 }

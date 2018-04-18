@@ -18,15 +18,9 @@ namespace GraphLibrary.DataModel
         /// Seen-Flag zur Markierung
         /// </summary>
         public bool Seen { get; set; }
-
-
-        /// <summary>
-        /// Gibt an, ob die Kante gerichtet ist
-        /// </summary>
-        public bool Directed { get; private set; }
         
         /// <summary>
-        /// Identifizierung dieses Knotens
+        /// Identifizierung dieses Knotens. Damit sind parallele Kanten ausgeschlossen, wenn das die ID ist.
         /// </summary>
         public string Identifier { get { return $"{FromVertex} -> {ToVertex}"; } }
 
@@ -55,12 +49,10 @@ namespace GraphLibrary.DataModel
         /// </summary>
         /// <param name="from">Von welchem Knoten</param>
         /// <param name="to">zu welchem Knoten</param>
-        /// <param name="isDirected">Flag, ob gerichtete Kante</param>
-        public Edge(IVertex from, IVertex to, bool isDirected)
+        public Edge(IVertex from, IVertex to)
         {
             FromVertex = from;
             ToVertex = to;
-            Directed = isDirected;
 
             Costs = new Dictionary<string, int>();
         }

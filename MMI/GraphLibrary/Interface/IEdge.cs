@@ -18,11 +18,11 @@ namespace GraphLibrary.Interface
         /// </summary>
         bool Seen { get; set; }
 
-        
-        /// <summary>
-        /// Gibt an, ob die Kante gerichtet ist
-        /// </summary>
-        bool Directed { get; }
+        // -> Ist Eigenschaft des Graphen
+        ///// <summary>
+        ///// Gibt an, ob die Kante gerichtet ist
+        ///// </summary>
+        //bool Directed { get; }
 
 
         /// <summary>
