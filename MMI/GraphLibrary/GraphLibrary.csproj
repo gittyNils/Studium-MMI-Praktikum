@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\Edge.cs" />
+    <Compile Include="DataModel\Graph.cs" />
     <Compile Include="DataModel\Vertex.cs" />
     <Compile Include="Interface\IEdge.cs" />
     <Compile Include="Interface\IGraph.cs" />
@@ -49,7 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Algorithm\" />
+    <Folder Include="Algorithm\Traversing\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

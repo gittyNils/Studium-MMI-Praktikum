@@ -58,6 +58,6 @@ namespace GraphLibrary.Interface
         void AddVertex(string identifier);
 
 
-        #endregion Methods        
+        #endregion Methods
     }
 }

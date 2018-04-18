@@ -27,13 +27,13 @@ namespace GraphLibrary.Interface
         /// <summary>
         /// Nachbarknoten
         /// </summary>
-        List<IVertex> Neighbours { get; }
+        Dictionary<string, IVertex> Neighbours { get; }
 
 
         /// <summary>
         /// Kanten an diesem Knoten
         /// </summary>
-        List<IEdge> Edges { get; }
+        Dictionary<string, IEdge> Edges { get; }
 
         #endregion Properties
 

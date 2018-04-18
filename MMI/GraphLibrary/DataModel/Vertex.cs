@@ -28,13 +28,13 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Nachbarknoten
         /// </summary>
-        public List<IVertex> Neighbours { get; private set; }
+        public Dictionary<string, IVertex> Neighbours { get; private set; }
 
 
         /// <summary>
         /// Kanten an diesem Knoten
         /// </summary>
-        public List<IEdge> Edges { get; private set; }
+        public Dictionary<string, IEdge> Edges { get; private set; }
 
         #endregion Properties
 
@@ -64,15 +64,19 @@ namespace GraphLibrary.DataModel
         /// <param name="edge">neue Kante</param>
         public void AddEdge(IEdge edge)
         {
-            Edges.Add(edge);
+            Edges.Add(edge.Identifier, edge);
 
             // Nachbarn ggf. aktualisieren
             // Suche dem anderen Ende der Kante
             IVertex other = edge.GetOtherVertex(this);
 
-            if (!Neighbours.Contains(other))
+            if (!Neighbours.ContainsKey(other.Identifier))
             {
-                Neighbours.Add(other);
+                Neighbours.Add(other.Identifier, other);
+            }
+            else
+            {
+                throw new Exception($"Duplicate Key Identifier={other.Identifier} Objet={other}");
             }
         }
 
