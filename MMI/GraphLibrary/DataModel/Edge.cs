@@ -49,12 +49,20 @@ namespace GraphLibrary.DataModel
         /// </summary>
         /// <param name="from">Von welchem Knoten</param>
         /// <param name="to">zu welchem Knoten</param>
-        public Edge(IVertex from, IVertex to)
+        public Edge(IVertex from, IVertex to, Dictionary<string, int> costs = null)
         {
             FromVertex = from;
             ToVertex = to;
 
-            Costs = new Dictionary<string, int>();
+            if (costs == null)
+            {
+                //Vorbelegen
+                Costs = new Dictionary<string, int>();
+            }
+            else
+            {
+                Costs = costs;
+            }
         }
 
 

@@ -48,6 +48,9 @@ namespace GraphLibrary.DataModel
         public Vertex(string id)
         {
             Identifier = id;
+
+            Neighbours = new Dictionary<string, IVertex>();
+            Edges = new Dictionary<string, IEdge>();
         }
 
 

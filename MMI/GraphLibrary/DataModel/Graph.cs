@@ -36,6 +36,25 @@ namespace GraphLibrary.DataModel
 
         #endregion Properties
 
+        #region Constructor
+
+        /// <summary>
+        /// Konstruktor
+        /// </summary>
+        /// <param name="id">Identifier</param>
+        /// <param name="directed">Flag, ob gerichteter Graph</param>
+        public Graph(string id, bool directed)
+        {
+            Directed = directed;
+            Identifier = id;
+
+            Edges = new Dictionary<string, IEdge>();
+            Vertices = new Dictionary<string, IVertex>();
+        }
+
+        #endregion Constructor
+
+
 
         #region Methods
 
@@ -62,9 +81,10 @@ namespace GraphLibrary.DataModel
         /// </summary>
         /// <param name="from"></param>
         /// <param name="to"></param>
-        public void AddEdge(IVertex from, IVertex to)
+        /// <param name="costs">Kosten</param>
+        public void AddEdge(IVertex from, IVertex to, Dictionary<string, int> costs = null)
         {
-            IEdge edge = new Edge(from, to);
+            IEdge edge = new Edge(from, to, costs);
 
             // Ist die Kante schon da?
             if (!Edges.ContainsKey(edge.Identifier))
