@@ -125,6 +125,16 @@ namespace GraphLibrary.DataModel
         }
 
 
+
+        /// <summary>
+        /// Überschriebene ToString-Methode
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return $"Graph={Identifier}";
+        }
+
         #endregion Methods
     }
 }

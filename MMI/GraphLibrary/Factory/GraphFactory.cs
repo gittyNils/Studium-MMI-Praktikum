@@ -13,10 +13,10 @@ namespace GraphLibrary.Factory
     /// Factory-Klasse zur Erstellung eines Graphen-Objektes.
     /// Dabei können verschiedene Quellen genutzt werden, z.B. eine Zeichenfolge in Form einer Adjazenzmatrix oder Adjazenzliste.
     /// Zudem wird angegeben, ob es sich um einen gerichteten oder ungerichteten Graphen handelt, worauf die Quelle aber nicht geprüft wird.
+    /// Die Nummerierung der Knoten beginnt immer mit 0.
     /// </summary>
-    public class GraphFactory
+    public static class GraphFactory
     {
-
         //Aspekte: Directed oder nicht, From String, FromFile, AdjazenzListe oder Matrix
 
 
@@ -29,8 +29,9 @@ namespace GraphLibrary.Factory
         /// <param name="matrix">Matrix als String</param>
         /// <param name="id">Identifier des Graphen</param>
         /// <param name="directed">Gibt an, ob Graph gerichtet ist</param>
+        /// <param name="splitChar">Zeichen, mit dem Elemente in der Matrix in einer Zeile gesplittet wurden (Default \t)</param>
         /// <returns></returns>
-        public static IGraph GraphFromAdjMatrixStringWithoutCost(string matrix, string id, bool directed)
+        public static IGraph GraphFromAdjMatrixStringWithoutCost(string matrix, string id, bool directed, char splitChar = '\t')
         {
             IGraph ret = null;
 
@@ -41,18 +42,14 @@ namespace GraphLibrary.Factory
             {
                 int vertexCount = int.Parse(sr.ReadLine());
 
-                for (int i = 1; i <= vertexCount; i++)
-                {
-                    // Knoten Einfügen
-                    tmpGraph.AddVertex(i.ToString());
-                }
+                FillGraphWithXElements(tmpGraph, vertexCount);
 
                 // Nun Kanten
 
                 for (int row = 0; row < vertexCount; row++)
                 {
                     // Einzelne Elemente der Row rausziehen
-                    var rowElements = sr.ReadLine().Split('\t');
+                    var rowElements = sr.ReadLine().Split(splitChar);
 
                     // Wenn nicht directed, dann nur obere Dreiecksmatrix einlesen, da Rest dann klar
                     int startcolumn = 0;
@@ -68,9 +65,9 @@ namespace GraphLibrary.Factory
 
                         if (val != 0)
                         {
-                            // es gibt eine Verbindung. Immer + 1, da Variablen hier Index
-                            var from = tmpGraph.Vertices[(row + 1).ToString()];
-                            var to = tmpGraph.Vertices[(column + 1).ToString()];
+                            // es gibt eine Verbindung.
+                            var from = tmpGraph.Vertices[row.ToString()];
+                            var to = tmpGraph.Vertices[column.ToString()];
                             tmpGraph.AddEdge(from, to);
                         }
                     }
@@ -87,7 +84,74 @@ namespace GraphLibrary.Factory
 
 
 
+        /// <summary>
+        /// Einlesen eine Graphen von einer Adjazenzliste aus einem String ohne Kostenangaben
+        /// </summary>
+        /// <param name="matrix">Matrix als String</param>
+        /// <param name="id">Identifier des Graphen</param>
+        /// <param name="directed">Gibt an, ob Graph gerichtet ist</param>
+        /// <param name="splitChar">Zeichen, mit dem Elemente in der Matrix in einer Zeile gesplittet wurden (Default \t)</param>
+        /// <returns></returns>
+        public static IGraph GraphFromAdjListStringWithoutCost(string matrix, string id, bool directed, char splitChar = '\t')
+        {
+            IGraph ret = null;
+
+            var tmpGraph = new Graph(id, directed);
+
+            // Erste Zeile ist Anzahl Knoten. Diese einfach durchnummerieren
+            using (StringReader sr = new StringReader(matrix))
+            {
+                int vertexCount = int.Parse(sr.ReadLine());
+
+                FillGraphWithXElements(tmpGraph, vertexCount);
+
+                // Nun Kanten anhand der Rows. So viele, wie eben da sind
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    var elements = line.Split(splitChar);
+
+                    // vom ersten Element zum zweiten Element läuft eine Kante
+                    var from = tmpGraph.Vertices[elements[0]];
+                    var to = tmpGraph.Vertices[elements[1]];
+                    tmpGraph.AddEdge(from, to);
+                }
+
+
+                ret = tmpGraph;
+            }
+
+
+            return ret;
+        }
+
+
+
+
         #endregion Without Costs
+
+
+
+        #region Helper
+
+        /// <summary>
+        /// Füllt den Übergebenen Graphen mit x Knoten, beginnend bei 0
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="x"></param>
+        private static void FillGraphWithXElements(IGraph graph, int x)
+        {
+            // Beginne mit Knoten 0
+            for (int i = 0; i < x; i++)
+            {
+                // Knoten Einfügen
+                graph.AddVertex(i.ToString());
+            }
+        }
+
+
+
+        #endregion Helper
 
 
     }

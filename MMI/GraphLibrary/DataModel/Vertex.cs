@@ -44,7 +44,7 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Standard-Konstruktur
         /// </summary>
-        /// <param name="id"><Eindeutige ID des Knotens/param>
+        /// <param name="id">Eindeutige ID des Knotens</param>
         public Vertex(string id)
         {
             Identifier = id;

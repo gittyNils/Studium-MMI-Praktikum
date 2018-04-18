@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithm\ConnectedGraphComponents.cs" />
+    <Compile Include="Algorithm\Traversing.cs" />
     <Compile Include="DataModel\Edge.cs" />
     <Compile Include="DataModel\Graph.cs" />
     <Compile Include="DataModel\Vertex.cs" />
@@ -49,8 +51,6 @@
     <Compile Include="Factory\GraphFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Algorithm\Traversing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
