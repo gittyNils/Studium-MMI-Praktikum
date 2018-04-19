@@ -15,11 +15,6 @@ namespace GraphLibrary.DataModel
         #region Properties
 
         /// <summary>
-        /// Seen-Flag zur Markierung
-        /// </summary>
-        public bool Seen { get; set; }
-
-        /// <summary>
         /// Identifizierung dieses Knotens
         /// </summary>
         public string Identifier { get; private set; }

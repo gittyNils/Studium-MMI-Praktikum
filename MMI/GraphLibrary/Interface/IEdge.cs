@@ -12,19 +12,7 @@ namespace GraphLibrary.Interface
     public interface IEdge
     {
         #region Properties
-
-        /// <summary>
-        /// Seen-Flag zur Markierung
-        /// </summary>
-        bool Seen { get; set; }
-
-        // -> Ist Eigenschaft des Graphen
-        ///// <summary>
-        ///// Gibt an, ob die Kante gerichtet ist
-        ///// </summary>
-        //bool Directed { get; }
-
-
+        
         /// <summary>
         /// Identifizierung dieser Kante
         /// </summary>

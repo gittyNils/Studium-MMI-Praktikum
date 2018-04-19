@@ -17,18 +17,27 @@ namespace GraphLibrary.Algorithm
         public static int CountComponents(IGraph graph, bool breadthFirst)
         {
             int count = 0;
-            int visitedCount = 0;
-            graph.ResetSeen();
+            Dictionary<string, IVertex> visited = new Dictionary<string, IVertex>();
 
             if (breadthFirst)
             {
                 do
                 {
                     // Starte beim ersten nicht gesehenen Knoten
-                    visitedCount += Traversing.BreadthFirstTraversal(graph, graph.Vertices.Values.First(x => x.Seen == false), false).Count;
+                    IVertex start = graph.Vertices.First(x => !visited.Keys.Contains(x.Key)).Value;
+
+                    var newVisited = Traversing.BreadthFirst(graph, start);
+
+                    // und als gesehen vermerken
+                    foreach (var pair in newVisited)
+                    {
+                        visited.Add(pair.Key, pair.Value);
+                    }
+
                     count++;
                 }
-                while (visitedCount < graph.Vertices.Count);
+                // Solange noch nicht alle Knoten gesehen wurden
+                while (visited.Count < graph.Vertices.Count);
             }
 
 

@@ -13,12 +13,7 @@ namespace GraphLibrary.DataModel
     public class Edge : IEdge
     {
         #region Properties
-
-        /// <summary>
-        /// Seen-Flag zur Markierung
-        /// </summary>
-        public bool Seen { get; set; }
-        
+                
         /// <summary>
         /// Identifizierung dieses Knotens. Damit sind parallele Kanten ausgeschlossen, wenn das die ID ist.
         /// </summary>

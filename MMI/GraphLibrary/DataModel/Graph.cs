@@ -57,24 +57,7 @@ namespace GraphLibrary.DataModel
 
 
         #region Methods
-
-        /// <summary>
-        /// Seen-Flag in Knoten und Kanten zurücksetzen
-        /// </summary>
-        public void ResetSeen()
-        {
-            // Knoten
-            foreach (var vertex in Vertices.Values)
-            {
-                vertex.Seen = false;
-            }
-
-            // Kanten
-            foreach (var edge in Edges.Values)
-            {
-                edge.Seen = false;
-            }
-        }
+                
 
         /// <summary>
         /// Hinzufügen einer Kante von einem Knoten zum anderen

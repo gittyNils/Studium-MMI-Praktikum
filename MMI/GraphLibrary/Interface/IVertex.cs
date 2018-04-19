@@ -12,12 +12,7 @@ namespace GraphLibrary.Interface
     public interface IVertex
     {
         #region Properties
-
-        /// <summary>
-        /// Seen-Flag zur Markierung
-        /// </summary>
-        bool Seen { get; set; }
-
+        
         /// <summary>
         /// Identifizierung dieses Knotens
         /// </summary>

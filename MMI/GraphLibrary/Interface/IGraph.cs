@@ -37,11 +37,7 @@ namespace GraphLibrary.Interface
         
 
         #region Methods
-
-        /// <summary>
-        /// Seen-Flag in Knoten und Kanten zurücksetzen
-        /// </summary>
-        void ResetSeen();
+        
 
         /// <summary>
         /// Hinzufügen einer Kante von einem Knoten zum anderen

@@ -17,6 +17,13 @@ namespace A1
      * 
      * Graph: Aufbau und Speicherformat Breitensuche (iterativ) und Tiefensuche (rekursiv) zur Bestimmung der Anzahl der Zusammenhangskomponenten
      * 
+     * 
+     * Lösungen:
+     * Graph1: 3
+     * Graph2: 2
+     * Graph3: 4
+     * Graph4: 4
+     * 
      */
 
     class Program
