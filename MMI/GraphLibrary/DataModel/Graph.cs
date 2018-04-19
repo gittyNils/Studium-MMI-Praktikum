@@ -104,7 +104,7 @@ namespace GraphLibrary.DataModel
             }
             else
             {
-                throw new Exception($"Duplicate Key Identifier={edge.Identifier} Object={edge}");
+                throw new InvalidOperationException($"Duplicate Key Identifier={edge.Identifier} Object={edge}");
             }
         }
 
@@ -125,10 +125,63 @@ namespace GraphLibrary.DataModel
             }
             else
             {
-                throw new Exception($"Duplicate Key Identifier={vert.Identifier} Object={vert}");
+                throw new InvalidOperationException($"Duplicate Key Identifier={vert.Identifier} Object={vert}");
             }
         }
 
+
+
+        /// <summary>
+        /// Entfernen einer Kante anhand des Identifiers.
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveEdge(string id)
+        {
+            if (Edges.ContainsKey(id))
+            {
+                IEdge edge = Edges[id];
+
+                // Kante entfernen
+                Edges.Remove(id);
+
+                // Und noch die Nachbar-/Indirekter-Nachbar-Beziehungen in den Knoten Pflegen.
+                // Das geht über die Knoten
+                edge.FromVertex.RemoveEdge(edge);
+                edge.ToVertex.RemoveEdge(edge);
+            }
+            else
+            {
+                throw new InvalidOperationException($"Edge with Identifier={id} not found.");
+            }
+        }
+
+
+        /// <summary>
+        /// Entfernen eines Knotens anhand des Identifiers.
+        /// Achtung: Alle Kanten zu und von dieser Kante müssen zuvor entfernt worden sein!
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveVertex(string id)
+        {
+            if (Vertices.ContainsKey(id))
+            {
+                IVertex vert = Vertices[id];
+
+                // nur entfernen, wenn alle Verbindungen weg sind
+                if (vert.Neighbours.Count == 0 && vert.ForeignNeighbours.Count == 0)
+                {
+                    Vertices.Remove(vert.Identifier);
+                }
+                else
+                {
+                    throw new InvalidOperationException($"Vertex Identifier={vert.Identifier} has still edges and can not be removed.");
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"Vertex with Identifier={id} not found.");
+            }
+        }
 
 
         /// <summary>

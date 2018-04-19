@@ -9,17 +9,12 @@ Zwillinge (Kanten in Hin- und Rückrichtung) bei Kanten Merken?
 
 
 
-Readonly-Collection
-
-Remove sachen
+Readonly-Collection -> tut so erst mal keinem weh, wenns so geht
 
 
 
 
 
-Funktionieren die Add-Funktionen alle richtig?
-
-Zeigt wer auf Mich?
 
 
 

@@ -51,6 +51,15 @@ namespace GraphLibrary.Interface
         void AddEdge(IEdge edge, bool directed);
 
 
+
+        /// <summary>
+        /// Entfernen einer Kante, die mit diesem Knoten verbunden ist.
+        /// Dabei die Neighbours und ForeignNeighbours aktualisieren.
+        /// </summary>
+        /// <param name="edge">zu entfernene Kante</param>
+        /// <param name="directed">gibt an, ob die neue Kante gerichtet ist</param>
+        void RemoveEdge(IEdge edge);
+
         #endregion Methods
     }
 }

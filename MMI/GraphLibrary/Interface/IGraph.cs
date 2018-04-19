@@ -64,6 +64,21 @@ namespace GraphLibrary.Interface
         void AddVertex(string identifier);
 
 
+        /// <summary>
+        /// Entfernen einer Kante anhand des Identifiers.
+        /// </summary>
+        /// <param name="id"></param>
+        void RemoveEdge(string id);
+
+
+        /// <summary>
+        /// Entfernen eines Knotens anhand des Identifiers.
+        /// Achtung: Alle Kanten zu und von dieser Kante müssen zuvor entfernt worden sein!
+        /// </summary>
+        /// <param name="id"></param>
+        void RemoveVertex(string id);
+
+
         #endregion Methods
     }
 }
