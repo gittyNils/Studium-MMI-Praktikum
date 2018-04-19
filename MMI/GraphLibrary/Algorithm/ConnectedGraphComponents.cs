@@ -63,8 +63,7 @@ namespace GraphLibrary.Algorithm
             }
             // Solange noch nicht alle Knoten gesehen wurden
             while (visited.Count < graph.Vertices.Count);
-
-
+            
             return count;
         }
 

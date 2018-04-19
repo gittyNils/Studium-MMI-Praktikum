@@ -11,7 +11,7 @@ namespace GraphLibrary.Algorithm
     /// Klasse mit Funktionen zum Durchlaufen eines Graphen
     /// </summary>
     public static class Traversing
-    {       
+    {
 
         /// <summary>
         /// Traversieren mit Hilfe einer Breitensuche
@@ -49,9 +49,7 @@ namespace GraphLibrary.Algorithm
 
             return pathWithSeenKnodes;
         }
-
-
-
+        
 
 
         /// <summary>
@@ -65,8 +63,7 @@ namespace GraphLibrary.Algorithm
             Dictionary<string, IVertex> pathWithSeenKnodes = new Dictionary<string, IVertex>();
 
             DepthFirstRecursion(graph, start, pathWithSeenKnodes);
-
-
+            
             return pathWithSeenKnodes;
         }
 
@@ -89,11 +86,7 @@ namespace GraphLibrary.Algorithm
                     DepthFirstRecursion(graph, neighbour, pathWithSeenKnodes);
                 }
             }
-
-
         }
-
-
 
     }
 }
