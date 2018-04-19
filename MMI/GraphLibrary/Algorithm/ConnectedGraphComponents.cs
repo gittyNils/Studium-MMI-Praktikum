@@ -39,6 +39,26 @@ namespace GraphLibrary.Algorithm
                 // Solange noch nicht alle Knoten gesehen wurden
                 while (visited.Count < graph.Vertices.Count);
             }
+            else
+            {
+                do
+                {
+                    // Starte beim ersten nicht gesehenen Knoten
+                    IVertex start = graph.Vertices.First(x => !visited.Keys.Contains(x.Key)).Value;
+
+                    var newVisited = Traversing.BreadthFirst(graph, start);
+
+                    // und als gesehen vermerken
+                    foreach (var pair in newVisited)
+                    {
+                        visited.Add(pair.Key, pair.Value);
+                    }
+
+                    count++;
+                }
+                // Solange noch nicht alle Knoten gesehen wurden
+                while (visited.Count < graph.Vertices.Count);
+            }
 
 
             return count;

@@ -28,46 +28,65 @@ namespace A1
 
     class Program
     {
+        /// <summary>
+        /// Informationen für einen Testlauf in dieser Aufgabe
+        /// </summary>
+        public class TestData
+        {
+            public string Name { get; set; }
+            public string File { get; set; }
+            public bool IsAdjazenzList { get; set; }
+        }
+
+
         static void Main(string[] args)
         {
-            var sw = System.Diagnostics.Stopwatch.StartNew();
+            List<TestData> testFiles = new List<TestData>();
+
+            testFiles.Add(new TestData { Name = "Graph 1", File = @"SampleData\Graph1.txt", IsAdjazenzList = false });
+            testFiles.Add(new TestData { Name = "Graph 2", File = @"SampleData\Graph2.txt", IsAdjazenzList = true });
+            testFiles.Add(new TestData { Name = "Graph 3", File = @"SampleData\Graph3.txt", IsAdjazenzList = true });
+            testFiles.Add(new TestData { Name = "Graph 4", File = @"SampleData\Graph4.txt", IsAdjazenzList = true });
 
 
-            string s1 = File.ReadAllText(@"SampleData\Graph1.txt");
-            IGraph g1 = GraphFactory.GraphFromAdjMatrixStringWithoutCost(s1, "Graph 1", false);
+            // 2 mal durchlaufen, da Dll-Ladezeiten sonst stark auffallen
+            for (int i = 0; i < 2; i++)
+            {
+                foreach (var data in testFiles)
+                {
+                    Console.WriteLine($"------------------ Start Name={data.Name} ------------------");
 
-            int anz1 = ConnectedGraphComponents.CountComponents(g1, true);
+                    // Initialisieren
+
+                    // Einlesen in String 
+                    string s = File.ReadAllText(data.File);
+
+                    var swInit = System.Diagnostics.Stopwatch.StartNew();
+
+                    IGraph g;
+                    if (data.IsAdjazenzList)
+                    {
+                        g = GraphFactory.GraphFromAdjListStringWithoutCost(s, data.Name, false);
+                    }
+                    else
+                    {
+                        g = GraphFactory.GraphFromAdjMatrixStringWithoutCost(s, data.Name, false);
+                    }
+
+                    swInit.Stop();
+                    Console.WriteLine($"Init took {swInit.ElapsedMilliseconds} ms");
+
+                    // Rechnen
+
+                    var swCalc = System.Diagnostics.Stopwatch.StartNew();
+                    int anz = ConnectedGraphComponents.CountComponents(g, true);
+                    swCalc.Stop();
+                    Console.WriteLine($"Calc Components with BredthFirst took {swCalc.ElapsedMilliseconds} ms");
+
+                }
+            }
 
 
-
-
-
-
-
-            string s2 = File.ReadAllText(@"SampleData\Graph2.txt");
-            IGraph g2 = GraphFactory.GraphFromAdjListStringWithoutCost(s2, "Graph 2", false);
-
-            int anz2 = ConnectedGraphComponents.CountComponents(g2, true);
-
-
-
-            string s3 = File.ReadAllText(@"SampleData\Graph3.txt");
-            IGraph g3 = GraphFactory.GraphFromAdjListStringWithoutCost(s3, "Graph 3", false);
-
-
-            int anz3 = ConnectedGraphComponents.CountComponents(g3, true);
-
-
-
-            string s4 = File.ReadAllText(@"SampleData\Graph4.txt");
-            IGraph g4 = GraphFactory.GraphFromAdjListStringWithoutCost(s4, "Graph 4", false);
-
-            
-            int anz4 = ConnectedGraphComponents.CountComponents(g4, true);
-
-
-            sw.Stop();
-            Console.WriteLine($"{sw.ElapsedMilliseconds} ms elapsed");
             Console.ReadLine();
 
         }
