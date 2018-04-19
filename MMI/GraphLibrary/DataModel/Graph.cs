@@ -1,4 +1,5 @@
-﻿using GraphLibrary.Interface;
+﻿using GraphLibrary.Helper;
+using GraphLibrary.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,9 +21,9 @@ namespace GraphLibrary.DataModel
         public string Identifier { get; private set; }
 
         /// <summary>
-        /// Gibt an, ob die Kante gerichtet ist
+        /// Gibt an, ob es sich um einen gerichteten Graphen, also mit Richtung bei den Kanten, handelt.
         /// </summary>
-        public bool Directed { get; private set; }
+        public bool IsDirected { get; private set; }
 
         /// <summary>
         /// Alle Kanten des Graphen
@@ -45,7 +46,7 @@ namespace GraphLibrary.DataModel
         /// <param name="directed">Flag, ob gerichteter Graph</param>
         public Graph(string id, bool directed)
         {
-            Directed = directed;
+            IsDirected = directed;
             Identifier = id;
 
             Edges = new Dictionary<string, IEdge>();
@@ -57,7 +58,26 @@ namespace GraphLibrary.DataModel
 
 
         #region Methods
-                
+
+
+        /// <summary>
+        /// Liefert, falls vorhanden, die Kante zwischen from und to
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns>Kante oder null, wenn keine vorhanden</returns>
+        public IEdge GetEdge(IVertex from, IVertex to)
+        {
+            IEdge ret = null;
+            string edgeId = EdgeIdHelper.GetId(this, from, to);
+
+            if (Edges.ContainsKey(edgeId))
+            {
+                ret = Edges[edgeId];
+            }
+
+            return ret;
+        }
 
         /// <summary>
         /// Hinzufügen einer Kante von einem Knoten zum anderen
@@ -67,7 +87,9 @@ namespace GraphLibrary.DataModel
         /// <param name="costs">Kosten</param>
         public void AddEdge(IVertex from, IVertex to, Dictionary<string, int> costs = null)
         {
-            IEdge edge = new Edge(from, to, costs);
+            string edgeId = EdgeIdHelper.GetId(this, from, to);
+
+            IEdge edge = new Edge(edgeId, from, to, costs);
 
             // Ist die Kante schon da?
             if (!Edges.ContainsKey(edge.Identifier))
@@ -75,14 +97,14 @@ namespace GraphLibrary.DataModel
                 // Hinzufügen in eigene Verwaltung
                 Edges.Add(edge.Identifier, edge);
 
-                // Und noch die Nachbar-Beziehungen in den Knoten Pflegen.
+                // Und noch die Nachbar-/Indirekter-Nachbar-Beziehungen in den Knoten Pflegen.
                 // Das geht über die Knoten
-                from.AddEdge(edge);
-                to.AddEdge(edge);
+                from.AddEdge(edge, IsDirected);
+                to.AddEdge(edge, IsDirected);
             }
             else
             {
-                throw new Exception($"Duplicate Key Identifier={edge.Identifier} Objet={edge}");
+                throw new Exception($"Duplicate Key Identifier={edge.Identifier} Object={edge}");
             }
         }
 
@@ -103,7 +125,7 @@ namespace GraphLibrary.DataModel
             }
             else
             {
-                throw new Exception($"Duplicate Key Identifier={vert.Identifier} Objet={vert}");
+                throw new Exception($"Duplicate Key Identifier={vert.Identifier} Object={vert}");
             }
         }
 

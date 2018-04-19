@@ -15,9 +15,9 @@ namespace GraphLibrary.DataModel
         #region Properties
                 
         /// <summary>
-        /// Identifizierung dieses Knotens. Damit sind parallele Kanten ausgeschlossen, wenn das die ID ist.
+        /// Identifizierung dieses Knotens. 
         /// </summary>
-        public string Identifier { get { return $"{FromVertex} -> {ToVertex}"; } }
+        public string Identifier { get; private set; }
 
         /// <summary>
         /// Kante startet an diesem Knoten
@@ -42,10 +42,13 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Konstruktor
         /// </summary>
+        /// <param name="id">Eindeutige ID des Knotens</param>
         /// <param name="from">Von welchem Knoten</param>
         /// <param name="to">zu welchem Knoten</param>
-        public Edge(IVertex from, IVertex to, Dictionary<string, int> costs = null)
+        /// <param name="costs">Kosten dieser Kante</param>
+        public Edge(string id, IVertex from, IVertex to, Dictionary<string, int> costs = null)
         {
+            Identifier = id;
             FromVertex = from;
             ToVertex = to;
 

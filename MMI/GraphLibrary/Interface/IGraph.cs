@@ -19,9 +19,9 @@ namespace GraphLibrary.Interface
         string Identifier { get; }
 
         /// <summary>
-        /// Gibt an, ob die Kante gerichtet ist
+        /// Gibt an, ob es sich um einen gerichteten Graphen, also mit Richtung bei den Kanten, handelt.
         /// </summary>
-        bool Directed { get; }
+        bool IsDirected { get; }
 
         /// <summary>
         /// Alle Kanten des Graphen
@@ -34,10 +34,19 @@ namespace GraphLibrary.Interface
         Dictionary<string, IVertex> Vertices { get; }
 
         #endregion Properties
-        
+
 
         #region Methods
+
         
+        /// <summary>
+        /// Liefert, falls vorhanden, die Kante zwischen from und to
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <returns>Kante oder null, wenn keine vorhanden</returns>
+        IEdge GetEdge(IVertex from, IVertex to);
+
 
         /// <summary>
         /// Hinzufügen einer Kante von einem Knoten zum anderen

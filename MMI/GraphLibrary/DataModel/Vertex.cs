@@ -27,6 +27,12 @@ namespace GraphLibrary.DataModel
 
 
         /// <summary>
+        /// Fremde Nachbarknoten, die mich von sich aus direkt erreichen können
+        /// </summary>
+        public Dictionary<string, IVertex> ForeignNeighbours { get; private set; }
+
+
+        /// <summary>
         /// Kanten an diesem Knoten
         /// </summary>
         public Dictionary<string, IEdge> Edges { get; private set; }
@@ -45,6 +51,7 @@ namespace GraphLibrary.DataModel
             Identifier = id;
 
             Neighbours = new Dictionary<string, IVertex>();
+            ForeignNeighbours = new Dictionary<string, IVertex>();
             Edges = new Dictionary<string, IEdge>();
         }
 
@@ -57,24 +64,55 @@ namespace GraphLibrary.DataModel
 
         /// <summary>
         /// Hinzufügen einer Kante, die mit diesem Knoten verbunden ist.
-        /// Dabei die Neighbours aktualisieren.
+        /// Dabei die Neighbours und ForeignNeighbours aktualisieren.
         /// </summary>
         /// <param name="edge">neue Kante</param>
-        public void AddEdge(IEdge edge)
+        /// <param name="directed">gibt an, ob die neue Kante gerichtet ist</param>
+        public void AddEdge(IEdge edge, bool directed)
         {
             Edges.Add(edge.Identifier, edge);
+            
 
             // Nachbarn ggf. aktualisieren
             // Suche dem anderen Ende der Kante
             IVertex other = edge.GetOtherVertex(this);
 
-            if (!Neighbours.ContainsKey(other.Identifier))
+            bool otherIsForeignN = false;
+            bool otherISN = false;
+
+            // Ermittlung, ob Neighbour und ForeignNeighbour
+
+            if (directed)
             {
-                Neighbours.Add(other.Identifier, other);
+                // Geht die Kante zu mir?
+                if (edge.ToVertex == this)
+                {
+                    // Kante zu mir, also ein ForeignNeighbour
+                    otherIsForeignN = true;
+                }
+                else
+                {
+                    // Kante von mir weg , also mein Neighbour
+                    otherISN = true;
+                }
             }
             else
             {
-                throw new Exception($"Duplicate Key Identifier={other.Identifier} Objet={other}");
+                // Bei nicht Directed wird in Neighbours und ForeignNeighbours eingefügt
+                otherISN = true;
+                otherIsForeignN = true;
+            }
+
+
+            // Eigentliches Hinzufügen
+            if (otherISN)
+            {
+                Neighbours.Add(other.Identifier, other);
+            }
+
+            if(otherIsForeignN)
+            {
+                ForeignNeighbours.Add(other.Identifier, other);
             }
         }
 

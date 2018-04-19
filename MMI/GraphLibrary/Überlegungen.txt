@@ -4,30 +4,22 @@ Muss neben dem Neighbour auch die Kante zum Neighbour gespeichert werden?
 -> Nein, da man die Kante über den Key finden kann. (Gib mir Kante von x nach y)
 
 
-Zwillinge bei Kanten Merken?
-Zeigt wer auf Mich?
+Zwillinge (Kanten in Hin- und Rückrichtung) bei Kanten Merken?
+-> Einfach kurz nach der Gegenrichtung suchen. Das geht durch die Identifier sehr schnell
+
+
+
 Readonly-Collection
 
+Remove sachen
 
 
 
 
 
+Funktionieren die Add-Funktionen alle richtig?
 
-
-
-
-
-
-
-// Remove sachen
-// Graph.GibtEsEineKanteVonNach?
-// Abfrage auf Kanten über Funktion, die Directed abfragt?
-
-
-
-
-
+Zeigt wer auf Mich?
 
 
 

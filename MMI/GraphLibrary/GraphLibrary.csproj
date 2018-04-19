@@ -45,6 +45,7 @@
     <Compile Include="DataModel\Edge.cs" />
     <Compile Include="DataModel\Graph.cs" />
     <Compile Include="DataModel\Vertex.cs" />
+    <Compile Include="Helper\EdgeIdHelper.cs" />
     <Compile Include="Interface\IEdge.cs" />
     <Compile Include="Interface\IGraph.cs" />
     <Compile Include="Interface\IVertex.cs" />

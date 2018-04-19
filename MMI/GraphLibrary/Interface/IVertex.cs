@@ -26,6 +26,12 @@ namespace GraphLibrary.Interface
 
 
         /// <summary>
+        /// Fremde Nachbarknoten, die mich von sich aus direkt erreichen können
+        /// </summary>
+        Dictionary<string, IVertex> ForeignNeighbours { get; }
+
+
+        /// <summary>
         /// Kanten an diesem Knoten
         /// </summary>
         Dictionary<string, IEdge> Edges { get; }
@@ -38,10 +44,11 @@ namespace GraphLibrary.Interface
 
         /// <summary>
         /// Hinzufügen einer Kante, die mit diesem Knoten verbunden ist.
-        /// Dabei die Neighbours aktualisieren.
+        /// Dabei die Neighbours und ForeignNeighbours aktualisieren.
         /// </summary>
         /// <param name="edge">neue Kante</param>
-        void AddEdge(IEdge edge);
+        /// <param name="directed">gibt an, ob die neue Kante gerichtet ist</param>
+        void AddEdge(IEdge edge, bool directed);
 
 
         #endregion Methods
