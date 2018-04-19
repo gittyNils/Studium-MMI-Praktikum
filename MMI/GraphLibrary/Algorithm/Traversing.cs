@@ -11,10 +11,14 @@ namespace GraphLibrary.Algorithm
     /// Klasse mit Funktionen zum Durchlaufen eines Graphen
     /// </summary>
     public static class Traversing
-    {
-        
+    {       
 
-
+        /// <summary>
+        /// Traversieren mit Hilfe einer Breitensuche
+        /// </summary>
+        /// <param name="graph">Graph zum Traversieren</param>
+        /// <param name="start">Start-Knoten</param>
+        /// <returns></returns>
         public static Dictionary<string, IVertex> BreadthFirst(IGraph graph, IVertex start)
         {
             // Weg beim Durchlaufen
@@ -50,29 +54,46 @@ namespace GraphLibrary.Algorithm
 
 
 
-        //public static List<IVertex> DepthFirst(IGraph graph, IVertex start, bool resetFlagsBeforeStart)
-        //{
-        //    if (resetFlagsBeforeStart)
-        //    {
-        //        // Flags zur Sicherheit Resetten
-        //        graph.ResetSeen();
-        //    }
+        /// <summary>
+        /// Traversieren mit Hilfe einer Tiefensuche
+        /// </summary>
+        /// <param name="graph">Graph zum Traversieren</param>
+        /// <param name="start">Start-Knoten</param>
+        public static Dictionary<string, IVertex> DepthFirst(IGraph graph, IVertex start)
+        {
+            // Weg beim Durchlaufen
+            Dictionary<string, IVertex> pathWithSeenKnodes = new Dictionary<string, IVertex>();
 
-        //    // Weg beim Durchlaufen
-        //    List<IVertex> path = new List<IVertex>();
-
-        //    // TODO
-
-        //    return path;
-        //}
+            DepthFirstRecursion(graph, start, pathWithSeenKnodes);
 
 
-        //private static void DepthFirstTraversalRecursive(IGraph graph, IVertex currentItem, List<IVertex> path)
-        //{
-        //    // markiere mich als Seen und adde mich in den Pfad
-        //    currentItem.Seen = true;
+            return pathWithSeenKnodes;
+        }
 
-        //}
+        /// <summary>
+        /// Interne Funktion für die Rekursive Traversierung mit Hilfe der Tiefensuche
+        /// </summary>
+        /// <param name="graph">Graph zum Traversieren</param>
+        /// <param name="currentItem">aktueller Knoten</param>
+        /// <param name="pathWithSeenKnodes">Liste von bereits besuchten Knoten</param>
+        private static void DepthFirstRecursion(IGraph graph, IVertex currentItem, Dictionary<string, IVertex> pathWithSeenKnodes)
+        {
+            // aktellen Knoten als gesehen vermerken
+            pathWithSeenKnodes.Add(currentItem.Identifier, currentItem);
+
+            //Gehe über alle Nachbarn und, falls dieser noch nicht gesehen, auch für diesen den Rekursions-Schritt
+            foreach (var neighbour in currentItem.Neighbours.Values)
+            {
+                if (!pathWithSeenKnodes.ContainsKey(neighbour.Identifier))
+                {
+                    DepthFirstRecursion(graph, neighbour, pathWithSeenKnodes);
+                }
+            }
+
+
+        }
+
+
 
     }
 }

@@ -49,41 +49,46 @@ namespace A1
             testFiles.Add(new TestData { Name = "Graph 4", File = @"SampleData\Graph4.txt", IsAdjazenzList = true });
 
 
-            // 2 mal durchlaufen, da Dll-Ladezeiten sonst stark auffallen
-            for (int i = 0; i < 2; i++)
+
+            foreach (var data in testFiles)
             {
-                foreach (var data in testFiles)
+                Console.WriteLine($"------------------ Start Name={data.Name} ------------------");
+
+                // Initialisieren
+
+                // Einlesen in String 
+                string s = File.ReadAllText(data.File);
+
+                var swInit = System.Diagnostics.Stopwatch.StartNew();
+
+                IGraph g;
+                if (data.IsAdjazenzList)
                 {
-                    Console.WriteLine($"------------------ Start Name={data.Name} ------------------");
-
-                    // Initialisieren
-
-                    // Einlesen in String 
-                    string s = File.ReadAllText(data.File);
-
-                    var swInit = System.Diagnostics.Stopwatch.StartNew();
-
-                    IGraph g;
-                    if (data.IsAdjazenzList)
-                    {
-                        g = GraphFactory.GraphFromAdjListStringWithoutCost(s, data.Name, false);
-                    }
-                    else
-                    {
-                        g = GraphFactory.GraphFromAdjMatrixStringWithoutCost(s, data.Name, false);
-                    }
-
-                    swInit.Stop();
-                    Console.WriteLine($"Init took {swInit.ElapsedMilliseconds} ms");
-
-                    // Rechnen
-
-                    var swCalc = System.Diagnostics.Stopwatch.StartNew();
-                    int anz = ConnectedGraphComponents.CountComponents(g, true);
-                    swCalc.Stop();
-                    Console.WriteLine($"Calc Components with BredthFirst took {swCalc.ElapsedMilliseconds} ms");
-
+                    g = GraphFactory.GraphFromAdjListStringWithoutCost(s, data.Name, false);
                 }
+                else
+                {
+                    g = GraphFactory.GraphFromAdjMatrixStringWithoutCost(s, data.Name, false);
+                }
+
+                swInit.Stop();
+                Console.WriteLine($"Init took {swInit.ElapsedMilliseconds} ms");
+
+                // Rechnen
+
+                var swCalc = System.Diagnostics.Stopwatch.StartNew();
+                int anzBF = ConnectedGraphComponents.CountComponentsWithBreadthFirst(g);
+                swCalc.Stop();
+                Console.WriteLine($"Calc Components with BreadthFirst took {swCalc.ElapsedMilliseconds} ms");
+
+
+                swCalc.Restart();
+                int anzDF = ConnectedGraphComponents.CountComponentsWithDepthFirst(g);
+                swCalc.Stop();
+                Console.WriteLine($"Calc Components with DepthFirst took {swCalc.ElapsedMilliseconds} ms");
+
+
+                Console.WriteLine($"Zusammenhangskomponenten-Anzahl: {anzBF}(BreadthFirst) und {anzDF}(DepthFirst) \n");
             }
 
 

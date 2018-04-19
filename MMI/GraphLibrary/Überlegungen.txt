@@ -1,0 +1,35 @@
+﻿
+1. Aufgabe
+Muss neben dem Neighbour auch die Kante zum Neighbour gespeichert werden?
+-> Nein, da man die Kante über den Key finden kann. (Gib mir Kante von x nach y)
+
+
+Zwillinge bei Kanten Merken?
+Zeigt wer auf Mich?
+Readonly-Collection
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Remove sachen
+// Graph.GibtEsEineKanteVonNach?
+// Abfrage auf Kanten über Funktion, die Directed abfragt?
+
+
+
+
+
+
+
+
+
+

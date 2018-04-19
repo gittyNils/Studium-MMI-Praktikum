@@ -20,7 +20,7 @@ namespace GraphLibrary.Interface
 
 
         /// <summary>
-        /// Nachbarknoten
+        /// Nachbarknoten, die von mir aus direkt erreicht werden können
         /// </summary>
         Dictionary<string, IVertex> Neighbours { get; }
 

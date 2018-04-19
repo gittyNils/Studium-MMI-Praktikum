@@ -21,7 +21,7 @@ namespace GraphLibrary.DataModel
 
 
         /// <summary>
-        /// Nachbarknoten
+        /// Nachbarknoten, die von mir aus direkt erreicht werden können
         /// </summary>
         public Dictionary<string, IVertex> Neighbours { get; private set; }
 
