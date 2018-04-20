@@ -36,6 +36,8 @@ namespace A2
             var a = MST.Prim(g, "C");
 
 
+            var b = MST.Kruskal(g, "C");
+
             Console.ReadLine();
         }
     }

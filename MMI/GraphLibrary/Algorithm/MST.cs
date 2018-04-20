@@ -15,8 +15,48 @@ namespace GraphLibrary.Algorithm
     {
         public static IGraph Kruskal(IGraph graph, string costKey)
         {
+            // Graph zusammenbauen
+            IGraph mstGraph = new Graph("MST of" + graph.Identifier, graph.IsDirected);
 
-            return null;
+            // alle Knoten rein
+            foreach (var vertex in graph.Vertices)
+            {
+                mstGraph.AddVertex(vertex.Value.Identifier);
+            }
+
+
+
+            //sortierte Edges
+            var sortedEdges = graph.Edges.Values.OrderBy(x => x.Costs[costKey]);
+
+
+            //Durchgehen und einfügen, wenn kein Kreis entsteht im Baum
+            foreach (var edge in sortedEdges)
+            {
+                //Try and Error
+
+
+                var fromInNew = mstGraph.Vertices[edge.FromVertex.Identifier];
+                var toInNew = mstGraph.Vertices[edge.ToVertex.Identifier];
+                mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, int>(edge.Costs));
+
+
+                // ist nun ein Kreis?
+                // Wenn der minimalgrad von G kleinSigma >= 2, dann enthält er auch einen einfachen Kreis von mindestens der Länge kleinSigma + 1
+                // Isolierte Punkte nicht betrachten
+                var minGrad = mstGraph.Vertices.Values
+                    .Where(x => x.Edges.Count > 0)
+                    .Min(x => x.Edges.Count);
+
+                if (minGrad >= 2)
+                {
+                    // rückgängig machen
+                    var newEdge = mstGraph.GetEdge(fromInNew, toInNew);
+                    mstGraph.RemoveEdge(newEdge.Identifier);
+                }
+            }
+
+            return mstGraph;
         }
 
 
@@ -24,12 +64,13 @@ namespace GraphLibrary.Algorithm
 
         public static IGraph Prim(IGraph graph, string costKey)
         {
+            // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
+
             // Minimale Kosten, um zu einer Edge zu kommen
             Dictionary<string, int> minCostsToVertexId = new Dictionary<string, int>();
 
-            // Vorgänger/Parent
+            // Vorgänger
             Dictionary<string, string> parent = new Dictionary<string, string>();
-
 
             foreach (var entry in graph.Vertices)
             {
@@ -41,6 +82,8 @@ namespace GraphLibrary.Algorithm
             // Kosten des Startknotens (einfach des ersten)
             string first = graph.Vertices.First().Key;
             minCostsToVertexId[first] = 0;
+
+
 
             // alle Knoten, die noch zu besuchen/in MST zu übernehmen sind
             Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
@@ -61,7 +104,7 @@ namespace GraphLibrary.Algorithm
                     // hole die entsprechende Kante
                     var connectingEdge = graph.GetEdge(obj, neighbour.Value);
 
-                    // wenn neighbour noch in der Liste der nicht besuchten ist
+                    // wenn neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
                     // und es ist noch besser als bisher von den Kosten her
                     if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < minCostsToVertexId[neighbour.Key])
                     {
@@ -98,7 +141,7 @@ namespace GraphLibrary.Algorithm
 
                     var origEdge = graph.GetEdge(fromInOrig, toInOrig);
 
-                    mstGraph.AddEdge(fromInNew, toInNew, origEdge.Costs);
+                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, int>(origEdge.Costs));
                 }
             }
 
