@@ -19,6 +19,14 @@ Readonly-Collection -> tut so erst mal keinem weh, wenns so geht
 
 
 
+2. Aufgabe
+PriorityQueue in C#?
+
+Grad in Datenstruktur einfügen? undirected ist Grad einfach, aber directed wird in InGrad und AusGrad aufgeteilt
+
+// Satz 1.3 im Buch auf S. 9
+// Wenn der minimalgrad von G kleinSigma >= 2, dann enthält er auch einen einfachen Kreis von mindestens der Länge kleinSigma + 1
+
 
 
 

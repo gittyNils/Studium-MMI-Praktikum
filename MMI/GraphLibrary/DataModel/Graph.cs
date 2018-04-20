@@ -59,6 +59,10 @@ namespace GraphLibrary.DataModel
 
         #region Methods
 
+        
+
+
+        #region Modify Graph
 
         /// <summary>
         /// Liefert, falls vorhanden, die Kante zwischen from und to
@@ -182,6 +186,8 @@ namespace GraphLibrary.DataModel
                 throw new InvalidOperationException($"Vertex with Identifier={id} not found.");
             }
         }
+
+        #endregion Modify Graph
 
 
         /// <summary>

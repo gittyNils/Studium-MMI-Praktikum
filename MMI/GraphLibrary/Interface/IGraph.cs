@@ -37,8 +37,11 @@ namespace GraphLibrary.Interface
 
 
         #region Methods
-
         
+
+        #region Modify Graph
+
+
         /// <summary>
         /// Liefert, falls vorhanden, die Kante zwischen from und to
         /// </summary>
@@ -77,6 +80,8 @@ namespace GraphLibrary.Interface
         /// </summary>
         /// <param name="id"></param>
         void RemoveVertex(string id);
+
+        #endregion Modify Graph
 
 
         #endregion Methods
