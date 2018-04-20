@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraphLibrary.Factory;
+using System.IO;
 
 namespace A2
 {
@@ -37,6 +39,28 @@ namespace A2
 
 
             var b = MST.Kruskal(g, "C");
+
+
+            var costName = "Kosten";
+
+            var s = File.ReadAllText(@"SampleData\G_1_2.txt");
+            IGraph gTest = GraphFactory.GraphFromAdjListStringWithCost(s, "T1", costName, false);
+
+
+            var sw = System.Diagnostics.Stopwatch.StartNew();
+
+
+            var c = MST.Prim(gTest, costName);
+
+            sw.Stop();
+            Console.WriteLine($"Prim {sw.ElapsedMilliseconds} ms with ResultCost={c.Edges.Values.Sum(x => x.Costs[costName])}");
+
+
+            sw.Restart();
+            var d = MST.Kruskal(gTest, costName);
+
+
+            Console.WriteLine($"Kruskal {sw.ElapsedMilliseconds} ms with ResultCost={d.Edges.Values.Sum(x => x.Costs[costName])}");
 
             Console.ReadLine();
         }

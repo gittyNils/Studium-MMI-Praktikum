@@ -87,19 +87,19 @@ namespace GraphLibrary.Factory
         /// <summary>
         /// Einlesen eine Graphen von einer Adjazenzliste aus einem String ohne Kostenangaben
         /// </summary>
-        /// <param name="matrix">Matrix als String</param>
+        /// <param name="inputString">Eingabestring</param>
         /// <param name="id">Identifier des Graphen</param>
         /// <param name="directed">Gibt an, ob Graph gerichtet ist</param>
         /// <param name="splitChar">Zeichen, mit dem Elemente in der Matrix in einer Zeile gesplittet wurden (Default \t)</param>
         /// <returns></returns>
-        public static IGraph GraphFromAdjListStringWithoutCost(string matrix, string id, bool directed, char splitChar = '\t')
+        public static IGraph GraphFromAdjListStringWithoutCost(string inputString, string id, bool directed, char splitChar = '\t')
         {
             IGraph ret = null;
 
             var tmpGraph = new Graph(id, directed);
 
             // Erste Zeile ist Anzahl Knoten. Diese einfach durchnummerieren
-            using (StringReader sr = new StringReader(matrix))
+            using (StringReader sr = new StringReader(inputString))
             {
                 int vertexCount = int.Parse(sr.ReadLine());
 
@@ -129,6 +129,60 @@ namespace GraphLibrary.Factory
 
 
         #endregion Without Costs
+
+
+        #region With Costs
+
+
+
+        /// <summary>
+        /// Einlesen eine Graphen von einer Adjazenzliste aus einem String mit Kostenangaben
+        /// </summary>
+        /// <param name="inputString">Eingabestring</param>
+        /// <param name="id">Identifier des Graphen</param>
+        /// <param name="costName">Name der Kosten</param>
+        /// <param name="directed">Gibt an, ob Graph gerichtet ist</param>
+        /// <param name="splitChar">Zeichen, mit dem Elemente in der Matrix in einer Zeile gesplittet wurden (Default \t)</param>
+        /// <returns></returns>
+        public static IGraph GraphFromAdjListStringWithCost(string inputString, string id, string costName, bool directed, char splitChar = '\t')
+        {
+            IGraph ret = null;
+
+            var tmpGraph = new Graph(id, directed);
+
+            // Erste Zeile ist Anzahl Knoten. Diese einfach durchnummerieren
+            using (StringReader sr = new StringReader(inputString))
+            {
+                int vertexCount = int.Parse(sr.ReadLine());
+
+                FillGraphWithXElements(tmpGraph, vertexCount);
+
+                // Nun Kanten anhand der Rows. So viele, wie eben da sind
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    var elements = line.Split(splitChar);
+
+                    // vom ersten Element zum zweiten Element läuft eine Kante
+                    var from = tmpGraph.Vertices[elements[0]];
+                    var to = tmpGraph.Vertices[elements[1]];
+                    double cost = double.Parse(elements[2]);
+                    var dict = new Dictionary<string, double> { { costName, cost } };
+                    tmpGraph.AddEdge(from, to, dict);
+                }
+
+
+                ret = tmpGraph;
+            }
+
+
+            return ret;
+        }
+
+
+
+        #endregion With Costs
+
 
 
 

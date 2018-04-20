@@ -15,6 +15,11 @@ namespace GraphLibrary.Algorithm
     {
         public static IGraph Kruskal(IGraph graph, string costKey)
         {
+            // From ist immer der Gruppengeber
+            Dictionary<string, string> groupMapPerVertex = new Dictionary<string, string>();
+            Dictionary<string, List<string>> groupMap = new Dictionary<string, List<string>>();
+
+
             // Graph zusammenbauen
             IGraph mstGraph = new Graph("MST of" + graph.Identifier, graph.IsDirected);
 
@@ -22,9 +27,11 @@ namespace GraphLibrary.Algorithm
             foreach (var vertex in graph.Vertices)
             {
                 mstGraph.AddVertex(vertex.Value.Identifier);
+                groupMapPerVertex[vertex.Value.Identifier] = vertex.Value.Identifier;
+                groupMap[vertex.Value.Identifier] = new List<string> { vertex.Value.Identifier };
             }
 
-
+            
 
             //sortierte Edges
             var sortedEdges = graph.Edges.Values.OrderBy(x => x.Costs[costKey]);
@@ -33,27 +40,33 @@ namespace GraphLibrary.Algorithm
             //Durchgehen und einfügen, wenn kein Kreis entsteht im Baum
             foreach (var edge in sortedEdges)
             {
-                //Try and Error
+                string fromId = edge.FromVertex.Identifier;
+                string toId = edge.ToVertex.Identifier;
 
+                //Wäre nun bei hinzunahme ein Kreis?
 
-                var fromInNew = mstGraph.Vertices[edge.FromVertex.Identifier];
-                var toInNew = mstGraph.Vertices[edge.ToVertex.Identifier];
-                mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(edge.Costs));
+                string fromGroup = groupMapPerVertex[fromId];
+                string toGroup = groupMapPerVertex[toId];
 
-
-                // ist nun ein Kreis?
-                // Wenn der minimalgrad von G kleinSigma >= 2, dann enthält er auch einen einfachen Kreis von mindestens der Länge kleinSigma + 1
-                // Isolierte Punkte nicht betrachten
-                var minGrad = mstGraph.Vertices.Values
-                    .Where(x => x.Edges.Count > 0)
-                    .Min(x => x.Edges.Count);
-
-                if (minGrad >= 2)
+                bool wouldBeCycle = fromGroup == toGroup;
+                if (!wouldBeCycle)
                 {
-                    // rückgängig machen
-                    var newEdge = mstGraph.GetEdge(fromInNew, toInNew);
-                    mstGraph.RemoveEdge(newEdge.Identifier);
+                    // to in Gruppe von From
+                    foreach (var member in groupMap[toGroup])
+                    {
+                        groupMapPerVertex[member] = groupMapPerVertex[fromGroup];
+                        groupMap[fromGroup].Add(member);
+                    }
+
+                    //alte Gruppe auflösen
+                    groupMap.Remove(toGroup);
+
+                    var from = mstGraph.Vertices[fromId];
+                    var to = mstGraph.Vertices[toId];
+                    mstGraph.AddEdge(from, to, new Dictionary<string, double>(edge.Costs));
                 }
+
+                
             }
 
             return mstGraph;

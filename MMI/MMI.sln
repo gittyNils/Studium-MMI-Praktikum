@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphUnitTests", "GraphUnitTests\GraphUnitTests.csproj", "{22999676-BF59-406A-9D5C-58E74F3CDF8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2", "A2\A2.csproj", "{74DC807A-DD13-4844-BA11-73E243397B9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "A2", "Aufgaben\A2\A2.csproj", "{74DC807A-DD13-4844-BA11-73E243397B9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
