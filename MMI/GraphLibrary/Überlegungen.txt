@@ -13,6 +13,8 @@ Readonly-Collection -> tut so erst mal keinem weh, wenns so geht
 
 
 
+--> Anmerkungen: Strings als Key für Dictionary ungutes Gefühl bei Prof.
+
 
 
 
