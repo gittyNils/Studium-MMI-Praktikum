@@ -89,7 +89,7 @@ namespace GraphLibrary.DataModel
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="costs">Kosten</param>
-        public void AddEdge(IVertex from, IVertex to, Dictionary<string, int> costs = null)
+        public void AddEdge(IVertex from, IVertex to, Dictionary<string, double> costs = null)
         {
             string edgeId = EdgeIdHelper.GetId(this, from, to);
 

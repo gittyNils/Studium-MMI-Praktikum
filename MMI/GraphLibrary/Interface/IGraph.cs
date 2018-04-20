@@ -57,7 +57,7 @@ namespace GraphLibrary.Interface
         /// <param name="from"></param>
         /// <param name="to"></param>
         /// <param name="costs">Kosten</param>
-        void AddEdge(IVertex from, IVertex to, Dictionary<string, int> costs = null);
+        void AddEdge(IVertex from, IVertex to, Dictionary<string, double> costs = null);
 
 
         /// <summary>

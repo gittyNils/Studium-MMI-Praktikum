@@ -33,7 +33,7 @@ namespace GraphLibrary.DataModel
         /// <summary>
         /// Kosten an dieser Kante. Werden als Key-Value-Pair abgespeichert
         /// </summary>
-        public Dictionary<string, int> Costs { get; set; }
+        public Dictionary<string, double> Costs { get; set; }
 
         #endregion Properties
 
@@ -46,7 +46,7 @@ namespace GraphLibrary.DataModel
         /// <param name="from">Von welchem Knoten</param>
         /// <param name="to">zu welchem Knoten</param>
         /// <param name="costs">Kosten dieser Kante</param>
-        public Edge(string id, IVertex from, IVertex to, Dictionary<string, int> costs = null)
+        public Edge(string id, IVertex from, IVertex to, Dictionary<string, double> costs = null)
         {
             Identifier = id;
             FromVertex = from;
@@ -55,7 +55,7 @@ namespace GraphLibrary.DataModel
             if (costs == null)
             {
                 //Vorbelegen
-                Costs = new Dictionary<string, int>();
+                Costs = new Dictionary<string, double>();
             }
             else
             {

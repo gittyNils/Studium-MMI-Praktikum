@@ -38,7 +38,7 @@ namespace GraphLibrary.Algorithm
 
                 var fromInNew = mstGraph.Vertices[edge.FromVertex.Identifier];
                 var toInNew = mstGraph.Vertices[edge.ToVertex.Identifier];
-                mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, int>(edge.Costs));
+                mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(edge.Costs));
 
 
                 // ist nun ein Kreis?
@@ -67,7 +67,7 @@ namespace GraphLibrary.Algorithm
             // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
 
             // Minimale Kosten, um zu einer Edge zu kommen
-            Dictionary<string, int> minCostsToVertexId = new Dictionary<string, int>();
+            Dictionary<string, double> minCostsToVertexId = new Dictionary<string, double>();
 
             // Vorgänger
             Dictionary<string, string> parent = new Dictionary<string, string>();
@@ -141,7 +141,7 @@ namespace GraphLibrary.Algorithm
 
                     var origEdge = graph.GetEdge(fromInOrig, toInOrig);
 
-                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, int>(origEdge.Costs));
+                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Costs));
                 }
             }
 
@@ -149,10 +149,10 @@ namespace GraphLibrary.Algorithm
         }
 
 
-        private static string GetMinsId(Dictionary<string, int> dict)
+        private static string GetMinsId(Dictionary<string, double> dict)
         {
             // Initialize min value
-            int min = int.MaxValue;
+            double min = double.MaxValue;
             string minsId = null;
 
             foreach (var pair in dict)
