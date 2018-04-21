@@ -2,6 +2,7 @@
 using GraphLibrary.Interface;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -166,7 +167,7 @@ namespace GraphLibrary.Factory
                     // vom ersten Element zum zweiten Element läuft eine Kante
                     var from = tmpGraph.Vertices[elements[0]];
                     var to = tmpGraph.Vertices[elements[1]];
-                    double cost = double.Parse(elements[2]);
+                    double cost = double.Parse(elements[2], CultureInfo.InvariantCulture);
                     var dict = new Dictionary<string, double> { { costName, cost } };
                     tmpGraph.AddEdge(from, to, dict);
                 }
