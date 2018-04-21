@@ -97,7 +97,7 @@ namespace A2
             testFiles.Add(new TestData { Name = "G_1_200", File = @"SampleData\G_1_200.txt" });
             testFiles.Add(new TestData { Name = "G_10_20", File = @"SampleData\G_10_20.txt" });
             testFiles.Add(new TestData { Name = "G_10_200", File = @"SampleData\G_10_200.txt" });
-            testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
+            //testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
 
 
 
@@ -128,7 +128,7 @@ namespace A2
                 swCalc.Stop();
                 Console.WriteLine($"KruskalV1 {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
 
-
+                //SLOW
                 swCalc.Restart();
                 var p = MST.Prim(g, costName);
                 swCalc.Stop();
@@ -147,7 +147,6 @@ namespace A2
                 swCalc.Stop();
                 Console.WriteLine($"PrimV3 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
                 
-
             }
 
 

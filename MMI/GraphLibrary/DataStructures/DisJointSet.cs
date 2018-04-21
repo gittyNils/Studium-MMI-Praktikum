@@ -31,11 +31,7 @@ namespace GraphLibrary.DataStructures
         /// <param name="element"></param>
         public void AddSet(T element)
         {
-            var newSet = new DisJointSetNode<T>
-            {
-                Data = element,
-                Rank = 0
-            };
+            var newSet = new DisJointSetNode<T> { Data = element };
 
             // oberster Parent zeigt auf sich selbst
             newSet.Parent = newSet;
@@ -104,26 +100,10 @@ namespace GraphLibrary.DataStructures
             var nodeA = _elementToNodeMap[rootA];
             var nodeB = _elementToNodeMap[rootB];
 
-            
-            // nun die beiden Mengen verknüpfen
 
-            if (nodeA.Rank == nodeB.Rank)
-            {
-                nodeB.Parent = nodeA;
-                nodeA.Rank++;
-            }
-            else
-            {
-                //pick max Rank node as root
-                if (nodeA.Rank < nodeB.Rank)
-                {
-                    nodeA.Parent = nodeB;
-                }
-                else
-                {
-                    nodeB.Parent = nodeA;
-                }
-            }
+            // nun die beiden Mengen verknüpfen
+            // Einfach node A als Parent für alle nehmen. Beim suchen wird ja ggf. "nachgeflacht"
+            nodeB.Parent = nodeA;
         }
 
         #endregion Methods
@@ -142,10 +122,6 @@ namespace GraphLibrary.DataStructures
         /// </summary>
         internal T Data { get; set; }
 
-        /// <summary>
-        /// Dient zum Vergleich auf Größe von zwei Mengen.
-        /// </summary>
-        internal int Rank { get; set; }
 
         /// <summary>
         /// Zeiger auf Parent (für Weg zum Stellvertreter)
