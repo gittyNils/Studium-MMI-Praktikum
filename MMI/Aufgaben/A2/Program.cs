@@ -92,12 +92,12 @@ namespace A2
             var costName = "Kosten";
             List<TestData> testFiles = new List<TestData>();
 
-            //testFiles.Add(new TestData { Name = "G_1_2", File = @"SampleData\G_1_2.txt" });
-            //testFiles.Add(new TestData { Name = "G_1_20", File = @"SampleData\G_1_20.txt" });
-            //testFiles.Add(new TestData { Name = "G_1_200", File = @"SampleData\G_1_200.txt" });
-            //testFiles.Add(new TestData { Name = "G_10_20", File = @"SampleData\G_10_20.txt" });
+            testFiles.Add(new TestData { Name = "G_1_2", File = @"SampleData\G_1_2.txt" });
+            testFiles.Add(new TestData { Name = "G_1_20", File = @"SampleData\G_1_20.txt" });
+            testFiles.Add(new TestData { Name = "G_1_200", File = @"SampleData\G_1_200.txt" });
+            testFiles.Add(new TestData { Name = "G_10_20", File = @"SampleData\G_10_20.txt" });
             testFiles.Add(new TestData { Name = "G_10_200", File = @"SampleData\G_10_200.txt" });
-            //testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
+            testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
 
 
 
@@ -135,10 +135,10 @@ namespace A2
                 Console.WriteLine($"Prim {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
 
 
-                swCalc.Restart();
-                p = MST.PrimV2(g, costName);
-                swCalc.Stop();
-                Console.WriteLine($"PrimV2 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
+                //swCalc.Restart();
+                //p = MST.PrimV2(g, costName);
+                //swCalc.Stop();
+                //Console.WriteLine($"PrimV2 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
 
 
 
