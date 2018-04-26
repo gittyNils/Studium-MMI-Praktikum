@@ -49,7 +49,7 @@ namespace GraphLibrary.DataStructures
         {
             if (!_elementToNodeMap.ContainsKey(element))
             {
-                throw new Exception("No such set with given member.");
+                throw new Exception("No set with this Element!");
             }
 
             // hole über den Wert das Element in der Verwaltung und Suche den Stellvertreter
@@ -68,7 +68,7 @@ namespace GraphLibrary.DataStructures
 
             if (node != parent)
             {
-                // ich bin nicht Stellvertreter, aber ich merke mir diesen als meinen Parent.
+                // ich bin nicht Stellvertreter, aber ich merke mir diesen, wenn ergefunden wurde, als meinen direkten Parent.
                 node.Parent = FindSet(node.Parent);
                 return node.Parent;
             }
