@@ -22,7 +22,7 @@ namespace A2
             public string File { get; set; }
         }
 
-
+        
         static void Main(string[] args)
         {
             /*
@@ -97,7 +97,7 @@ namespace A2
             testFiles.Add(new TestData { Name = "G_1_200", File = @"SampleData\G_1_200.txt" });
             testFiles.Add(new TestData { Name = "G_10_20", File = @"SampleData\G_10_20.txt" });
             testFiles.Add(new TestData { Name = "G_10_200", File = @"SampleData\G_10_200.txt" });
-            //testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
+            testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
 
 
 
@@ -126,21 +126,14 @@ namespace A2
                 swCalc.Restart();
                 k = MST.KruskalV1(g, costName);
                 swCalc.Stop();
-                Console.WriteLine($"KruskalV1 {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
+                Console.WriteLine($"KruskalV1 (Dict) {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
+                
 
 
                 swCalc.Restart();
-                var p = MST.PrimV2(g, costName);
-                swCalc.Stop();
-                Console.WriteLine($"PrimV2 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
-
-
-
-                swCalc.Restart();
-                p = MST.Prim(g, costName);
+                var p = MST.Prim(g, costName);
                 swCalc.Stop();
                 Console.WriteLine($"Prim {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
-                
             }
 
 

@@ -153,14 +153,18 @@ namespace GraphLibrary.Algorithm
         }
 
 
-        
 
 
 
 
-        public class MyNode : FastPriorityQueueNode
+        /// <summary>
+        /// Abgeleitete Klasse vom PriorityQueueNode, die den Identifier eines Knotens zu einer Priorität(hier Kosten) enthält
+        /// </summary>
+        public class VertexNode : PriorityQueueNode
         {
-            //Put custom properties here
+            /// <summary>
+            /// Identifier eines Knotens
+            /// </summary>
             public string Id { get; set; }
         }
 
@@ -178,10 +182,10 @@ namespace GraphLibrary.Algorithm
             Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
 
             // Minimale Kosten, um zu einer Edge zu kommen
-            FastPriorityQueue<MyNode> q = new FastPriorityQueue<MyNode>(graph.Vertices.Count);
+            PriorityQueue<VertexNode> q = new PriorityQueue<VertexNode>(graph.Vertices.Count);
             // Schneller Zugriff auf die Elemente der Queue
-            Dictionary<string, MyNode> fastAccess = new Dictionary<string, MyNode>();
-            
+            Dictionary<string, VertexNode> fastAccess = new Dictionary<string, VertexNode>();
+
             // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
             Dictionary<string, string> parent = new Dictionary<string, string>();
 
@@ -189,7 +193,7 @@ namespace GraphLibrary.Algorithm
             foreach (var entry in graph.Vertices)
             {
                 // maximale Kosten eintragen
-                var node = new MyNode { Id = entry.Key };
+                var node = new VertexNode { Id = entry.Key };
                 q.Enqueue(node, double.MaxValue);
                 fastAccess[entry.Key] = node;
                 parent[entry.Key] = null;
@@ -267,13 +271,7 @@ namespace GraphLibrary.Algorithm
 
 
 
-
-
-
-
-
-
-
+        
 
         #region Obsolete (Too Slow or Wrong)
 
