@@ -128,24 +128,18 @@ namespace A2
                 swCalc.Stop();
                 Console.WriteLine($"KruskalV1 {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
 
-                //SLOW
+
                 swCalc.Restart();
-                var p = MST.Prim(g, costName);
+                var p = MST.PrimV2(g, costName);
+                swCalc.Stop();
+                Console.WriteLine($"PrimV2 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
+
+
+
+                swCalc.Restart();
+                p = MST.Prim(g, costName);
                 swCalc.Stop();
                 Console.WriteLine($"Prim {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
-
-
-                //swCalc.Restart();
-                //p = MST.PrimV2(g, costName);
-                //swCalc.Stop();
-                //Console.WriteLine($"PrimV2 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
-
-
-
-                swCalc.Restart();
-                p = MST.PrimV3(g, costName);
-                swCalc.Stop();
-                Console.WriteLine($"PrimV3 {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
                 
             }
 

@@ -16,6 +16,7 @@ namespace GraphLibrary.Algorithm
     {
         /// <summary>
         /// Bestimmung des MST mit Hilfe des Algorithmus von Kruskal.
+        /// (Variante mit Dictionaries)
         /// (Verbinde je zwei Knoten mit global kostengünstigster Kante, es sei denn, es würde ein Kreis entstehen.)
         /// Die Prüfung des Kreises erfolgt über eine Mengenbildung der Knoten mit je einem Stellvertreter.
         /// </summary>
@@ -96,6 +97,7 @@ namespace GraphLibrary.Algorithm
 
         /// <summary>
         /// Bestimmung des MST mit Hilfe des Algorithmus von Kruskal.
+        /// (Variante mit disjunkten Mengen)
         /// (Verbinde je zwei Knoten mit global kostengünstigster Kante, es sei denn, es würde ein Kreis entstehen.)
         /// Die Prüfung des Kreises erfolgt über eine Mengenbildung der Knoten mit je einem Stellvertreter.
         /// </summary>
@@ -151,26 +153,20 @@ namespace GraphLibrary.Algorithm
         }
 
 
+        
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+        public class MyNode : FastPriorityQueueNode
+        {
+            //Put custom properties here
+            public string Id { get; set; }
+        }
 
 
         /// <summary>
-        /// Bestimmung des MST mit Hilfe des Algorithmus von Prim.
+        /// Bestimmung des MST mit Hilfe des Algorithmus von Prim. (Nutzen Priority Queue)
         /// (Verbinde einen im MST befindlichen Knoten mit kostengünstigster Kante zu einem Nachbarn, der nicht schon im MST ist.)
         /// </summary>
         /// <param name="graph"></param>
@@ -178,52 +174,60 @@ namespace GraphLibrary.Algorithm
         /// <returns></returns>
         public static IGraph Prim(IGraph graph, string costKey)
         {
-            // Minimale Kosten, um vom Vorgänger zu einer Edge zu kommen. Hier sind nur Knoten drin, die von der bisherigen Menge benachbart sind.
-            Dictionary<string, double> minCostsForVertexId = new Dictionary<string, double>();
-
-            // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
-            Dictionary<string, string> parent = new Dictionary<string, string>();
-            
             // alle Knoten, die noch zu besuchen/in MST zu übernehmen sind
             Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
+
+            // Minimale Kosten, um zu einer Edge zu kommen
+            FastPriorityQueue<MyNode> q = new FastPriorityQueue<MyNode>(graph.Vertices.Count);
+            // Schneller Zugriff auf die Elemente der Queue
+            Dictionary<string, MyNode> fastAccess = new Dictionary<string, MyNode>();
+            
+            // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
+            Dictionary<string, string> parent = new Dictionary<string, string>();
+
 
             foreach (var entry in graph.Vertices)
             {
                 // maximale Kosten eintragen
-                minCostsForVertexId[entry.Key] = double.MaxValue;
+                var node = new MyNode { Id = entry.Key };
+                q.Enqueue(node, double.MaxValue);
+                fastAccess[entry.Key] = node;
                 parent[entry.Key] = null;
             }
 
             // Kosten des Startknotens (einfach des ersten)
             string first = graph.Vertices.First().Key;
-            minCostsForVertexId[first] = 0;
+            var elem = fastAccess[first];
+            q.UpdatePriority(elem, 0);
 
 
             // alle Knoten abarbeiten, da alle in den MST müssen
             while (vertices.Count > 0)
             {
-                string key = PopMinId(minCostsForVertexId);
+                var minObj = q.Dequeue();
 
-                IVertex currentVertex = vertices[key];
+                IVertex obj = vertices[minObj.Id];
 
-                // aus Knoten raus
-                vertices.Remove(key);
+                // aus vertices raus
+                vertices.Remove(minObj.Id);
 
                 // für alle Nachbarn
-                foreach (var neighbour in currentVertex.Neighbours)
+                foreach (var neighbour in obj.Neighbours)
                 {
                     // hole die entsprechende Kante
-                    var connectingEdge = graph.GetEdge(currentVertex, neighbour.Value);
+                    var connectingEdge = graph.GetEdge(obj, neighbour.Value);
 
-                    // wenn Neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
+                    var neighbourElem = fastAccess[neighbour.Key];
+
+                    // wenn neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
                     // und es ist noch besser als bisher von den Kosten her
-                    if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < minCostsForVertexId[neighbour.Key])
+                    if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < neighbourElem.Priority)
                     {
                         // Vorgänger setzen
-                        parent[neighbour.Key] = key;
+                        parent[neighbour.Key] = minObj.Id;
 
                         // Kosten anpassen
-                        minCostsForVertexId[neighbour.Key] = connectingEdge.Costs[costKey];
+                        q.UpdatePriority(neighbourElem, connectingEdge.Costs[costKey]);
                     }
                 }
             }
@@ -244,12 +248,13 @@ namespace GraphLibrary.Algorithm
                 // Startknoten hat null, also keinen Vorgänger
                 if (entry.Value != null)
                 {
-                    var fromInOrig = graph.Vertices[entry.Value];
-                    var toInOrig = graph.Vertices[entry.Key];
-                    var origEdge = graph.GetEdge(fromInOrig, toInOrig);
-
                     var fromInNew = mstGraph.Vertices[entry.Value];
                     var toInNew = mstGraph.Vertices[entry.Key];
+
+                    var fromInOrig = graph.Vertices[entry.Value];
+                    var toInOrig = graph.Vertices[entry.Key];
+
+                    var origEdge = graph.GetEdge(fromInOrig, toInOrig);
 
                     mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Costs));
                 }
@@ -259,32 +264,6 @@ namespace GraphLibrary.Algorithm
         }
 
 
-        /// <summary>
-        /// Liefert den kleinsten Wert aus dem Dictionary und liefert dessen Identifier zurück.
-        /// Dabei wir der Eintrag direkt aus dem Dictionary gelöscht.
-        /// </summary>
-        /// <param name="dict"></param>
-        /// <returns></returns>
-        private static string PopMinId(Dictionary<string, double> dict)
-        {
-            // Initialize min value
-            double min = double.MaxValue;
-            string minsId = null;
-
-            foreach (var pair in dict)
-            {
-                if (dict[pair.Key] < min)
-                {
-                    min = dict[pair.Key];
-                    minsId = pair.Key;
-                }
-            }
-
-            dict.Remove(minsId);
-
-            return minsId;
-
-        }
 
 
 
@@ -296,17 +275,124 @@ namespace GraphLibrary.Algorithm
 
 
 
+        #region Obsolete (Too Slow or Wrong)
 
 
+        ///// <summary>
+        ///// Bestimmung des MST mit Hilfe des Algorithmus von Prim. (Durch Lineare Suche des Minimums sehr sehr Langsam)
+        ///// (Verbinde einen im MST befindlichen Knoten mit kostengünstigster Kante zu einem Nachbarn, der nicht schon im MST ist.)
+        ///// </summary>
+        ///// <param name="graph"></param>
+        ///// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
+        ///// <returns></returns>
+        //public static IGraph PrimLinearSearchAndSlow(IGraph graph, string costKey)
+        //{
+        //    // Minimale Kosten, um vom Vorgänger zu einer Edge zu kommen. Hier sind nur Knoten drin, die von der bisherigen Menge benachbart sind.
+        //    Dictionary<string, double> minCostsForVertexId = new Dictionary<string, double>();
+
+        //    // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
+        //    Dictionary<string, string> parent = new Dictionary<string, string>();
+
+        //    // alle Knoten, die noch zu besuchen/in MST zu übernehmen sind
+        //    Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
+
+        //    foreach (var entry in graph.Vertices)
+        //    {
+        //        // maximale Kosten eintragen
+        //        minCostsForVertexId[entry.Key] = double.MaxValue;
+        //        parent[entry.Key] = null;
+        //    }
+
+        //    // Kosten des Startknotens (einfach des ersten)
+        //    string first = graph.Vertices.First().Key;
+        //    minCostsForVertexId[first] = 0;
 
 
+        //    // alle Knoten abarbeiten, da alle in den MST müssen
+        //    while (vertices.Count > 0)
+        //    {
+        //        string key = PopMinId(minCostsForVertexId);
+
+        //        IVertex currentVertex = vertices[key];
+
+        //        // aus Knoten raus
+        //        vertices.Remove(key);
+
+        //        // für alle Nachbarn
+        //        foreach (var neighbour in currentVertex.Neighbours)
+        //        {
+        //            // hole die entsprechende Kante
+        //            var connectingEdge = graph.GetEdge(currentVertex, neighbour.Value);
+
+        //            // wenn Neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
+        //            // und es ist noch besser als bisher von den Kosten her
+        //            if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < minCostsForVertexId[neighbour.Key])
+        //            {
+        //                // Vorgänger setzen
+        //                parent[neighbour.Key] = key;
+
+        //                // Kosten anpassen
+        //                minCostsForVertexId[neighbour.Key] = connectingEdge.Costs[costKey];
+        //            }
+        //        }
+        //    }
 
 
+        //    // Graph zusammenbauen
+        //    IGraph mstGraph = new Graph("MST of" + graph.Identifier, graph.IsDirected);
+
+        //    // alle Knoten rein
+        //    foreach (var vertex in graph.Vertices)
+        //    {
+        //        mstGraph.AddVertex(vertex.Value.Identifier);
+        //    }
+
+        //    //Nun die Kanten aus der Parent rausholen:
+        //    foreach (var entry in parent)
+        //    {
+        //        // Startknoten hat null, also keinen Vorgänger
+        //        if (entry.Value != null)
+        //        {
+        //            var fromInOrig = graph.Vertices[entry.Value];
+        //            var toInOrig = graph.Vertices[entry.Key];
+        //            var origEdge = graph.GetEdge(fromInOrig, toInOrig);
+
+        //            var fromInNew = mstGraph.Vertices[entry.Value];
+        //            var toInNew = mstGraph.Vertices[entry.Key];
+
+        //            mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Costs));
+        //        }
+        //    }
+
+        //    return mstGraph;
+        //}
 
 
+        ///// <summary>
+        ///// Liefert den kleinsten Wert aus dem Dictionary und liefert dessen Identifier zurück.
+        ///// Dabei wir der Eintrag direkt aus dem Dictionary gelöscht.
+        ///// </summary>
+        ///// <param name="dict"></param>
+        ///// <returns></returns>
+        //private static string PopMinId(Dictionary<string, double> dict)
+        //{
+        //    // Initialize min value
+        //    double min = double.MaxValue;
+        //    string minsId = null;
 
+        //    foreach (var pair in dict)
+        //    {
+        //        if (dict[pair.Key] < min)
+        //        {
+        //            min = dict[pair.Key];
+        //            minsId = pair.Key;
+        //        }
+        //    }
 
+        //    dict.Remove(minsId);
 
+        //    return minsId;
+        //}
 
 
 
@@ -315,7 +401,7 @@ namespace GraphLibrary.Algorithm
         //{
         //    public double Cost { get; set; }
         //    public string ToVertexKey { get; set; }
-            
+
 
         //    public int CompareTo(object other)
         //    {
@@ -424,122 +510,9 @@ namespace GraphLibrary.Algorithm
 
 
 
+        #endregion Obsolete (Too Slow or Wrong)
 
 
 
-
-
-
-
-
-
-
-
-
-
-        public class MyNode : FastPriorityQueueNode
-        {
-            //Put custom properties here
-            public string Id { get; set; }
-        }
-
-
-        /// <summary>
-        /// Bestimmung des MST mit Hilfe des Algorithmus von Prim. (Nutzen Priority Queue)
-        /// (Verbinde einen im MST befindlichen Knoten mit kostengünstigster Kante zu einem Nachbarn, der nicht schon im MST ist.)
-        /// </summary>
-        /// <param name="graph"></param>
-        /// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
-        /// <returns></returns>
-        public static IGraph PrimV3(IGraph graph, string costKey)
-        {
-            // alle Knoten, die noch zu besuchen/in MST zu übernehmen sind
-            Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
-
-            // Minimale Kosten, um zu einer Edge zu kommen
-            FastPriorityQueue<MyNode> q = new FastPriorityQueue<MyNode>(graph.Vertices.Count);
-            // Schneller Zugriff auf die Elemente der Queue
-            Dictionary<string, MyNode> fastAccess = new Dictionary<string, MyNode>();
-            
-            // Initialisierung der Merker für Vorgänger (Dictionary TO -> From für Edges später zu bilden)
-            Dictionary<string, string> parent = new Dictionary<string, string>();
-
-
-            foreach (var entry in graph.Vertices)
-            {
-                // maximale Kosten eintragen
-                var node = new MyNode { Id = entry.Key };
-                q.Enqueue(node, double.MaxValue);
-                fastAccess[entry.Key] = node;
-                parent[entry.Key] = null;
-            }
-
-            // Kosten des Startknotens (einfach des ersten)
-            string first = graph.Vertices.First().Key;
-            var elem = fastAccess[first];
-            q.UpdatePriority(elem, 0);
-
-
-            // alle Knoten abarbeiten, da alle in den MST müssen
-            while (vertices.Count > 0)
-            {
-                var minObj = q.Dequeue();
-
-                IVertex obj = vertices[minObj.Id];
-
-                // aus vertices raus
-                vertices.Remove(minObj.Id);
-
-                // für alle Nachbarn
-                foreach (var neighbour in obj.Neighbours)
-                {
-                    // hole die entsprechende Kante
-                    var connectingEdge = graph.GetEdge(obj, neighbour.Value);
-
-                    var neighbourElem = fastAccess[neighbour.Key];
-
-                    // wenn neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
-                    // und es ist noch besser als bisher von den Kosten her
-                    if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < neighbourElem.Priority)
-                    {
-                        // Vorgänger setzen
-                        parent[neighbour.Key] = minObj.Id;
-
-                        // Kosten anpassen
-                        q.UpdatePriority(neighbourElem, connectingEdge.Costs[costKey]);
-                    }
-                }
-            }
-
-
-            // Graph zusammenbauen
-            IGraph mstGraph = new Graph("MST of" + graph.Identifier, graph.IsDirected);
-
-            // alle Knoten rein
-            foreach (var vertex in graph.Vertices)
-            {
-                mstGraph.AddVertex(vertex.Value.Identifier);
-            }
-
-            //Nun die Kanten aus der Parent rausholen:
-            foreach (var entry in parent)
-            {
-                // Startknoten hat null, also keinen Vorgänger
-                if (entry.Value != null)
-                {
-                    var fromInNew = mstGraph.Vertices[entry.Value];
-                    var toInNew = mstGraph.Vertices[entry.Key];
-
-                    var fromInOrig = graph.Vertices[entry.Value];
-                    var toInOrig = graph.Vertices[entry.Key];
-
-                    var origEdge = graph.GetEdge(fromInOrig, toInOrig);
-
-                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Costs));
-                }
-            }
-
-            return mstGraph;
-        }
     }
 }
