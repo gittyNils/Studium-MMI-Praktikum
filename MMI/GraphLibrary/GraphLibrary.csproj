@@ -43,6 +43,7 @@
     <Compile Include="Algorithm\ConnectedGraphComponents.cs" />
     <Compile Include="Algorithm\MST.cs" />
     <Compile Include="Algorithm\Traversing.cs" />
+    <Compile Include="Algorithm\TSP.cs" />
     <Compile Include="DataModel\Edge.cs" />
     <Compile Include="DataModel\Graph.cs" />
     <Compile Include="DataModel\Vertex.cs" />
