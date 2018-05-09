@@ -13,14 +13,96 @@ namespace GraphLibrary.Algorithm
     public static class TSP
     {
 
-        public static List<IEdge> NearestNeighbour()
+        public static List<IEdge> NearestNeighbour(IGraph graph, string costKey)
         {
 
+            List<IEdge> usedEdges = new List<IEdge>();
+
+            Dictionary<string, bool> isVertexSeen = new Dictionary<string, bool>(graph.Vertices.Count);
+            foreach (var vertex in graph.Vertices)
+            {
+                isVertexSeen.Add(vertex.Key, false);
+            }
+
+
+            // Startknoten einfach erster Knoten
+            IVertex startVertex = graph.Vertices.First().Value;
+
+            IVertex currentVertex = startVertex;
+            isVertexSeen[currentVertex.Identifier] = true;
+
+            // Wenn alle gesehen, dann ist der Hamilton-Kreis komplett. Dazu n-1 Kanten. Die letzte zum Kreisschluss wird hier hinzugefügt
+            while (usedEdges.Count != graph.Vertices.Count - 1)
+            {
+                //nehme die billigste Kante zum noch nicht gesehenen Knoten
+                var useEdge = currentVertex.Edges.Where(x => isVertexSeen[x.Value.GetOtherVertex(currentVertex).Identifier] == false)
+                                    .OrderBy(x => x.Value.Costs[costKey]).First().Value;
+
+                usedEdges.Add(useEdge);
+                currentVertex = useEdge.GetOtherVertex(currentVertex);
+                isVertexSeen[currentVertex.Identifier] = true;
+            }
+
+
+            // Letzte Kante noch
+            usedEdges.Add(graph.GetEdge(currentVertex, startVertex));
 
 
 
-            return null;
+            return usedEdges;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static List<IEdge> DoubleTree(IGraph graph, string costKey)
+        {
+
+            List<IEdge> usedEdges = new List<IEdge>();
+
+            // MST erstellen
+            var mst = MST.KruskalV1(graph, costKey);
+
+            // Tiefensuche auf MST liefert Reihenfolge der Knoten
+            // starte beim ersten des MST
+            var vertexOrder = Traversing.DepthFirst(mst, mst.Vertices.First().Value);
+
+            // aus Dictionary eine Liste machen, damit einfacher iteriert werden kann
+            var vertexOrderAsList = vertexOrder.Values.ToList();
+
+            // Kanten je zwischen den Knoten in Ergebnismenge einfügen
+            for (int i = 0; i < vertexOrderAsList.Count - 1; i++)
+            {
+                usedEdges.Add(graph.GetEdge(vertexOrderAsList[i], vertexOrderAsList[i+1]));
+            }
+
+            // und die letzte Kante nicht vergessen, die den Kreis schießt
+            usedEdges.Add(graph.GetEdge(vertexOrderAsList[vertexOrderAsList.Count -1], vertexOrderAsList[0]));
+
+            return usedEdges;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -111,7 +193,7 @@ namespace GraphLibrary.Algorithm
                     {
                         double newCosts = currentCosts + edge.Costs[costKey];
 
-                        //if ((bestWay == null || newCosts < bestCost)) //Branch and Bound
+                        if ((bestWay == null || newCosts < bestCost)) //Branch and Bound
                         {
                             // Kante als genutzt vermerken
                             usedEdges.Add(edge);

@@ -18,12 +18,17 @@ namespace A3
             var costName = "Kosten";
 
 
-            var s = File.ReadAllText(@"SampleData\K_10.txt");
+            var s = File.ReadAllText(@"SampleData\K_100.txt");
 
             IGraph gTest = GraphFactory.GraphFromAdjListStringWithCost(s, "T1", costName, false);
 
+
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var bestWay = TSP.TryAllTours(gTest, costName);
+            //var bestWay = TSP.TryAllTours(gTest, costName);
+
+            //var bestWay = TSP.NearestNeighbour(gTest, costName);
+
+            var bestWay = TSP.DoubleTree(gTest, costName);
 
 
 
