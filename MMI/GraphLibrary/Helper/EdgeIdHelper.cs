@@ -26,7 +26,7 @@ namespace GraphLibrary.Helper
 
             // Wenn ungerichtet, dann ist der IVertex mit dem kleineren String (binär) immer der FromVertex
             // >0 bedeutet bei Compare(a,b), dass b vor a kommt, also muss getauscht werden
-            if (!graph.IsDirected && string.Compare(from.Identifier, to.Identifier) > 0)
+            if (!graph.IsDirected && string.CompareOrdinal(from.Identifier, to.Identifier) > 0)
             {
                 var tmp = fromId;
                 fromId = toId;
