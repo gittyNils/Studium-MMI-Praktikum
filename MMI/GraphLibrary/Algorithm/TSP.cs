@@ -8,16 +8,23 @@ using System.Threading.Tasks;
 namespace GraphLibrary.Algorithm
 {
     /// <summary>
-    /// Funktionen zum Traveling Salesman Problem (TSP)
+    /// Funktionen zum Traveling Salesman Problem (TSP) -> Ermittlung der billigsten Tour bzw. Heuristiken dazu
     /// </summary>
     public static class TSP
     {
 
+        /// <summary>
+        /// Nearest Neighbour
+        /// </summary>
+        /// <param name="graph">Graph,, auf dem der Algorithmus angewandt werden soll</param>
+        /// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
+        /// <returns></returns>
         public static List<IEdge> NearestNeighbour(IGraph graph, string costKey)
         {
 
             List<IEdge> usedEdges = new List<IEdge>();
 
+            // Zur Prüfung auf bereits besuchte Knoten
             Dictionary<string, bool> isVertexSeen = new Dictionary<string, bool>(graph.Vertices.Count);
             foreach (var vertex in graph.Vertices)
             {
@@ -34,20 +41,21 @@ namespace GraphLibrary.Algorithm
             // Wenn alle gesehen, dann ist der Hamilton-Kreis komplett. Dazu n-1 Kanten. Die letzte zum Kreisschluss wird hier hinzugefügt
             while (usedEdges.Count != graph.Vertices.Count - 1)
             {
-                //nehme die billigste Kante zum noch nicht gesehenen Knoten
+                // nehme die billigste Kante zum noch nicht gesehenen Knoten
                 var useEdge = currentVertex.Edges.Where(x => isVertexSeen[x.Value.GetOtherVertex(currentVertex).Identifier] == false)
-                                    .OrderBy(x => x.Value.Costs[costKey]).First().Value;
+                                    .OrderBy(x => x.Value.Costs[costKey])
+                                    .First().Value;
 
+                // Kante hinzunehmen und aktuellen Knoten als gesehen markieren
                 usedEdges.Add(useEdge);
                 currentVertex = useEdge.GetOtherVertex(currentVertex);
                 isVertexSeen[currentVertex.Identifier] = true;
             }
 
 
-            // Letzte Kante noch
+            // Letzte Kante noch zum Schließen des Kreises
             usedEdges.Add(graph.GetEdge(currentVertex, startVertex));
-
-
+            
 
             return usedEdges;
         }
@@ -63,7 +71,12 @@ namespace GraphLibrary.Algorithm
 
 
 
-
+        /// <summary>
+        /// Doppelter Baum
+        /// </summary>
+        /// <param name="graph">Graph,, auf dem der Algorithmus angewandt werden soll</param>
+        /// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
+        /// <returns></returns>
         public static List<IEdge> DoubleTree(IGraph graph, string costKey)
         {
 
@@ -106,7 +119,12 @@ namespace GraphLibrary.Algorithm
 
 
 
-
+        /// <summary>
+        /// Ausprobieren aller Touren zur Ermittlung der billigsten.
+        /// </summary>
+        /// <param name="graph">Graph,, auf dem der Algorithmus angewandt werden soll</param>
+        /// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
+        /// <returns></returns>
         public static List<IEdge> TryAllTours(IGraph graph, string costKey)
         {
             List<IEdge> bestWay = null;
@@ -193,7 +211,7 @@ namespace GraphLibrary.Algorithm
                     {
                         double newCosts = currentCosts + edge.Costs[costKey];
 
-                        if ((bestWay == null || newCosts < bestCost)) //Branch and Bound
+                        //if ((bestWay == null || newCosts < bestCost)) //Branch and Bound
                         {
                             // Kante als genutzt vermerken
                             usedEdges.Add(edge);
