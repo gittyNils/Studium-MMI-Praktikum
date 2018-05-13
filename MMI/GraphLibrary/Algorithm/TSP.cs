@@ -124,8 +124,9 @@ namespace GraphLibrary.Algorithm
         /// </summary>
         /// <param name="graph">Graph,, auf dem der Algorithmus angewandt werden soll</param>
         /// <param name="costKey">Key, unter dem die zu betrachtenden Kosten abgespeichert wurden</param>
+        /// <param name="branchAndBound">Gibt an, ob das Branch and Bound-Verfahren beim Ausprobieren genutzt werden darf</param>
         /// <returns></returns>
-        public static List<IEdge> TryAllTours(IGraph graph, string costKey)
+        public static List<IEdge> TryAllTours(IGraph graph, string costKey, bool branchAndBound)
         {
             List<IEdge> bestWay = null;
             double bestCost = double.MaxValue;
@@ -141,7 +142,7 @@ namespace GraphLibrary.Algorithm
                     seenVertices.Add(key, false);
                 }
 
-                TryAllToursRecursion(graph, costKey, vertex, vertex, 0, seenVertices, usedEdges, ref bestWay, ref bestCost);
+                TryAllToursRecursion(graph, costKey, branchAndBound, vertex, vertex, 0, seenVertices, usedEdges, ref bestWay, ref bestCost);
             }
 
             /*List<IEdge>[] bestWays = new List<IEdge>[graph.Vertices.Count];
@@ -177,7 +178,8 @@ namespace GraphLibrary.Algorithm
         }
 
 
-        private static void TryAllToursRecursion(IGraph graph, string costKey, IVertex start, IVertex current, double currentCosts, Dictionary<string, bool> seenVertices, List<IEdge> usedEdges, ref List<IEdge> bestWay, ref double bestCost)
+        private static void TryAllToursRecursion(IGraph graph, string costKey, bool branchAndBound, IVertex start, IVertex current
+            , double currentCosts, Dictionary<string, bool> seenVertices, List<IEdge> usedEdges, ref List<IEdge> bestWay, ref double bestCost)
         {
             // current wurde nun besucht
             seenVertices[current.Identifier] = true;
@@ -211,11 +213,11 @@ namespace GraphLibrary.Algorithm
                     {
                         double newCosts = currentCosts + edge.Costs[costKey];
 
-                        //if ((bestWay == null || newCosts < bestCost)) //Branch and Bound
+                        if (!branchAndBound || (bestWay == null || newCosts < bestCost)) //Branch and Bound ggf. einschalten
                         {
                             // Kante als genutzt vermerken
                             usedEdges.Add(edge);
-                            TryAllToursRecursion(graph, costKey, start, other, newCosts, seenVertices, usedEdges, ref bestWay, ref bestCost);
+                            TryAllToursRecursion(graph, costKey, branchAndBound, start, other, newCosts, seenVertices, usedEdges, ref bestWay, ref bestCost);
                             usedEdges.RemoveAt(usedEdges.Count - 1);
                         }
                     }

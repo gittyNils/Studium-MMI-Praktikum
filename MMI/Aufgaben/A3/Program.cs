@@ -24,8 +24,10 @@ namespace A3
 
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var bestWay = TSP.TryAllTours(gTest, costName);
+            var bestWay = TSP.TryAllTours(gTest, costName, true);
 
+
+            #region Test
             //var bestWay = TSP.NearestNeighbour(gTest, costName);
 
             //var bestWay = TSP.DoubleTree(gTest, costName);
@@ -71,6 +73,7 @@ namespace A3
             //int[] elems = Enumerable.Repeat(0, 12).ToArray();
             //Perm(elems, 0, all);
 
+            #endregion Test
 
 
             sw.Stop();
