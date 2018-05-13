@@ -161,7 +161,7 @@ namespace GraphLibrary.Algorithm
                     seenVertices.Add(key, false);
                 }
 
-                TryAllRecursion(graph, costKey, vertex, vertex, 0, seenVertices, usedEdges, ref bestWays[localCnt], ref bestCosts[localCnt]);
+                TryAllToursRecursion(graph, costKey, branchAndBound, vertex, vertex, 0, seenVertices, usedEdges, ref bestWays[localCnt], ref bestCosts[localCnt]);
             });
 
 
