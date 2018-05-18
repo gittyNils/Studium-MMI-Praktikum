@@ -24,15 +24,15 @@ namespace A3
 
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            var bestWay = TSP.TryAllTours(gTest, costName, true);
+            //var bestWay = TSP.TryAllTours(gTest, costName, false);
 
 
-            #region Test
-            //var bestWay = TSP.NearestNeighbour(gTest, costName);
+            var bestWay = TSP.NearestNeighbour(gTest, costName);
 
             //var bestWay = TSP.DoubleTree(gTest, costName);
 
 
+            #region Test
 
             //long cnt = 0;
 
@@ -77,6 +77,12 @@ namespace A3
 
 
             sw.Stop();
+
+
+            foreach (var elem in bestWay)
+            {
+                Console.WriteLine(elem.Identifier);
+            }
 
             Console.WriteLine(bestWay.Sum(x => x.Costs[costName]));
             Console.WriteLine($"{sw.ElapsedMilliseconds} ms");

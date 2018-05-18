@@ -55,7 +55,7 @@ namespace GraphLibrary.Algorithm
 
             // Letzte Kante noch zum Schließen des Kreises
             usedEdges.Add(graph.GetEdge(currentVertex, startVertex));
-            
+
 
             return usedEdges;
         }
@@ -95,11 +95,11 @@ namespace GraphLibrary.Algorithm
             // Kanten je zwischen den Knoten in Ergebnismenge einfügen
             for (int i = 0; i < vertexOrderAsList.Count - 1; i++)
             {
-                usedEdges.Add(graph.GetEdge(vertexOrderAsList[i], vertexOrderAsList[i+1]));
+                usedEdges.Add(graph.GetEdge(vertexOrderAsList[i], vertexOrderAsList[i + 1]));
             }
 
             // und die letzte Kante nicht vergessen, die den Kreis schießt
-            usedEdges.Add(graph.GetEdge(vertexOrderAsList[vertexOrderAsList.Count -1], vertexOrderAsList[0]));
+            usedEdges.Add(graph.GetEdge(vertexOrderAsList[vertexOrderAsList.Count - 1], vertexOrderAsList[0]));
 
             return usedEdges;
         }
@@ -131,19 +131,21 @@ namespace GraphLibrary.Algorithm
             List<IEdge> bestWay = null;
             double bestCost = double.MaxValue;
 
+            // Foreach einsparen, da es ja ein Hamilton-Kreis ist, den wir suchen, und da sind eben die Startpunkte egal.
+            //foreach (var vertex in graph.Vertices.Values)
+            //{
+            var vertex = graph.Vertices.Values.First();
 
-            foreach (var vertex in graph.Vertices.Values)
+            List<IEdge> usedEdges = new List<IEdge>();
+            Dictionary<string, bool> seenVertices = new Dictionary<string, bool>();
+
+            foreach (var key in graph.Vertices.Keys)
             {
-                List<IEdge> usedEdges = new List<IEdge>();
-                Dictionary<string, bool> seenVertices = new Dictionary<string, bool>();
-
-                foreach (var key in graph.Vertices.Keys)
-                {
-                    seenVertices.Add(key, false);
-                }
-
-                TryAllToursRecursion(graph, costKey, branchAndBound, vertex, vertex, 0, seenVertices, usedEdges, ref bestWay, ref bestCost);
+                seenVertices.Add(key, false);
             }
+
+            TryAllToursRecursion(graph, costKey, branchAndBound, vertex, vertex, 0, seenVertices, usedEdges, ref bestWay, ref bestCost);
+            //}
 
             /*List<IEdge>[] bestWays = new List<IEdge>[graph.Vertices.Count];
             double[] bestCosts = Enumerable.Repeat(double.MaxValue, graph.Vertices.Count).ToArray();
