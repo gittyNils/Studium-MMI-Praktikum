@@ -24,10 +24,10 @@ namespace A3
 
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
-            //var bestWay = TSP.TryAllTours(gTest, costName, false);
+            var bestWay = TSP.TryAllTours(gTest, costName, true);
 
 
-            var bestWay = TSP.NearestNeighbour(gTest, costName);
+            //var bestWay = TSP.NearestNeighbour(gTest, costName);
 
             //var bestWay = TSP.DoubleTree(gTest, costName);
 

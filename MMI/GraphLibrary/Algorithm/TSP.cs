@@ -129,7 +129,7 @@ namespace GraphLibrary.Algorithm
         public static List<IEdge> TryAllTours(IGraph graph, string costKey, bool branchAndBound)
         {
             List<IEdge> bestWay = null;
-            double bestCost = double.MaxValue;
+            double bestCost = double.PositiveInfinity;//.MaxValue;
 
             // Foreach einsparen, da es ja ein Hamilton-Kreis ist, den wir suchen, und da sind eben die Startpunkte egal.
             //foreach (var vertex in graph.Vertices.Values)
@@ -194,7 +194,8 @@ namespace GraphLibrary.Algorithm
 
                 // Erstes ist bis dahin bestes oder Kosten noch günstiger
                 double costToCheck = currentCosts + closingEdge.Costs[costKey];
-                if (bestWay == null || costToCheck < bestCost)
+                if (/*bestWay == null || --> Da bestCost Infitite beim ersten mal*/ 
+                    costToCheck < bestCost)
                 {
                     bestWay = new List<IEdge>(usedEdges);
                     bestCost = costToCheck;
@@ -215,7 +216,7 @@ namespace GraphLibrary.Algorithm
                     {
                         double newCosts = currentCosts + edge.Costs[costKey];
 
-                        if (!branchAndBound || (bestWay == null || newCosts < bestCost)) //Branch and Bound ggf. einschalten
+                        if (!branchAndBound || (/*bestWay == null || */ newCosts < bestCost)) //Branch and Bound ggf. einschalten
                         {
                             // Kante als genutzt vermerken
                             usedEdges.Add(edge);
