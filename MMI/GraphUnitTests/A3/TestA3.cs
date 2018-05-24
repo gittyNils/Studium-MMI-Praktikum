@@ -64,10 +64,16 @@ namespace GraphUnitTests.A3
                 Assert.IsNotNull(k, "DoubleTree Null");
                 costs = k.Sum(x => x.Costs[costName]);
                 Assert.IsTrue(costs > 0, "DoubleTree Sum");
-
-
-
             }
+
+
+            string s1 = File.ReadAllText(testFiles[0].File);
+            var g1 = GraphFactory.GraphFromAdjListStringWithCost(s1, testFiles[0].Name, costName, false);
+            var k1 = TSP.TryAllTours(g1, costName, false);
+            Assert.AreEqual(38.41d, k1.Sum(x => x.Costs[costName]), "Alle Touren");
+
+            var k2 = TSP.TryAllTours(g1, costName, true);
+            Assert.AreEqual(38.41d, k2.Sum(x => x.Costs[costName]), "Alle Touren B&B");
         }
     }
 }
