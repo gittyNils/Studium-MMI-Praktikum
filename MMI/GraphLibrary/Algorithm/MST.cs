@@ -156,11 +156,10 @@ namespace GraphLibrary.Algorithm
 
 
 
-
         /// <summary>
-        /// Abgeleitete Klasse vom PriorityQueueNode, die den Identifier eines Knotens zu einer Priorität(hier Kosten) enthält
+        /// Abgeleitete Klasse vom PriorityQueueNode, die den Identifier eines Knotens zu einer Priorität (hier Kosten) enthält
         /// </summary>
-        public class VertexNode : PriorityQueueNode
+        class VertexNode : PriorityQueueNode
         {
             /// <summary>
             /// Identifier eines Knotens
@@ -181,7 +180,7 @@ namespace GraphLibrary.Algorithm
             // alle Knoten, die noch zu besuchen/in MST zu übernehmen sind
             Dictionary<string, IVertex> vertices = new Dictionary<string, IVertex>(graph.Vertices);
 
-            // Minimale Kosten, um zu einer Edge zu kommen
+            // Minimale Kosten, um zu einem weiteren Knoten zu kommen
             PriorityQueue<VertexNode> q = new PriorityQueue<VertexNode>(graph.Vertices.Count);
             // Schneller Zugriff auf die Elemente der Queue
             Dictionary<string, VertexNode> fastAccess = new Dictionary<string, VertexNode>();
