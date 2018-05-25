@@ -70,12 +70,15 @@ namespace A4
             sw.Restart();
             var big = ShortestPath.Dijkstra(bigGraph, bigGraph.Vertices.First().Key, costName);
             sw.Stop();
+            Console.WriteLine("Dijkstra");
             Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 
 
             sw.Restart();
-            big = ShortestPath.MooreBellmanFord(bigGraph, bigGraph.Vertices.First().Key, costName);
+            IEdge cycleEdge;
+            big = ShortestPath.MooreBellmanFord(bigGraph, bigGraph.Vertices.First().Key, costName, out cycleEdge);
             sw.Stop();
+            Console.WriteLine("MooreBellmanFord");
             Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 
             Console.ReadLine();

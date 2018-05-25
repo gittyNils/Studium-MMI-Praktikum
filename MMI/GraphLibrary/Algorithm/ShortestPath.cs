@@ -36,10 +36,16 @@ namespace GraphLibrary.Algorithm
         /// <returns></returns>
         public static IGraph DijkstraForTree(IGraph graph, string startId, string costKey)
         {
+            IGraph ret = null;
             var pred = Dijkstra(graph, startId, costKey);
 
-            // Ergebnis in Graph zusammenstellen
-            return BuildResultGraph(graph, pred, startId);
+            if (pred != null)
+            {
+                // Ergebnis in Graph zusammenstellen
+                ret = BuildResultGraph(graph, pred, startId);
+            }
+
+            return ret;
         }
 
 
@@ -118,32 +124,41 @@ namespace GraphLibrary.Algorithm
 
         /// <summary>
         /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Moore-Bellman-Ford-Algorithmus
-        /// Dieser prüft auch auf negative Zykel
+        /// Dieser prüft auch auf negative Zykel und liefert, falls einer existiert null zurück
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="startId"></param>
         /// <param name="costKey"></param>
         /// <returns></returns>
-        public static IGraph MooreBellmanFordForTree(IGraph graph, string startId, string costKey)
+        public static IGraph MooreBellmanFordForTree(IGraph graph, string startId, string costKey, out IEdge cycleEdge)
         {
-            var pred = MooreBellmanFord(graph, startId, costKey);
+            IGraph ret = null;
+            var pred = MooreBellmanFord(graph, startId, costKey, out cycleEdge);
 
-            // Ergebnis in Graph zusammenstellen
-            return BuildResultGraph(graph, pred, startId);
+            if (pred != null)
+            {
+                // Ergebnis in Graph zusammenstellen
+                ret = BuildResultGraph(graph, pred, startId);
+            }
+
+            return ret;
         }
 
 
 
         /// <summary>
         /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Moore-Bellman-Ford-Algorithmus
-        /// Dieser prüft auch auf negative Zykel
+        /// Dieser prüft auch auf negative Zykel und liefert, falls einer existiert null zurück
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="startId"></param>
         /// <param name="costKey"></param>
+        /// <param name="cycleEdge">Falls negativer Zykel, dann wurde dies bei dieser Kante erkannt.</param>
         /// <returns></returns>
-        public static Dictionary<string, string> MooreBellmanFord(IGraph graph, string startId, string costKey)
+        public static Dictionary<string, string> MooreBellmanFord(IGraph graph, string startId, string costKey, out IEdge cycleEdge)
         {
+            cycleEdge = null;
+
             // Vorgänger
             Dictionary<string, string> pred = new Dictionary<string, string>();
             // *** DIST ***   Für jeden Knoten die bisher minimalen Kosten von startId aus ("Distanz")
@@ -165,7 +180,6 @@ namespace GraphLibrary.Algorithm
 
             // Merker, ob sich in einer Iteration eine Änderung ergeben hat (benutzt zum Abbruch, wenn schon fertig)
             bool changedInIteration = true;
-            bool hasNegativeCycle = false;
 
             int counter = 0;
             // n-1 mal aufrühren + ein mal für Prüfung auf negativen Zykel
@@ -189,7 +203,7 @@ namespace GraphLibrary.Algorithm
                         // Die letzte iteration ist zur Prüfung auf Zykel
                         if (lastIteration)
                         {
-                            hasNegativeCycle = true;
+                            cycleEdge = edge;
                             break;
                         }
 
@@ -198,41 +212,70 @@ namespace GraphLibrary.Algorithm
                         pred[to] = from;
                     }
 
-                    //if (!graph.IsDirected)
-                    //{
-                    //    to = edge.FromVertex.Identifier;
-                    //    from = edge.ToVertex.Identifier;
+                    // Wenn Graph nicht gerichtet, dann muss die Kante in beide Richtungen getestet werden
+                    if (!graph.IsDirected)
+                    {
+                        to = edge.FromVertex.Identifier;
+                        from = edge.ToVertex.Identifier;
 
-                    //    // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
-                    //    if (dist[from] + edge.Costs[costKey] < dist[to])
-                    //    {
-                    //        changedInIteration = true;
+                        // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
+                        if (dist[from] + edge.Costs[costKey] < dist[to])
+                        {
+                            changedInIteration = true;
 
-                    //        // Die letzte iteration ist zur Prüfung auf Zykel
-                    //        if (lastIteration)
-                    //        {
-                    //            hasNegativeCycle = true;
-                    //            break;
-                    //        }
+                            // Die letzte iteration ist zur Prüfung auf Zykel
+                            if (lastIteration)
+                            {
+                                cycleEdge = edge;
+                                break;
+                            }
 
-                    //        // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
-                    //        dist[to] = dist[from] + edge.Costs[costKey];
-                    //        pred[to] = from;
-                    //    }
-                    //}
+                            // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
+                            dist[to] = dist[from] + edge.Costs[costKey];
+                            pred[to] = from;
+                        }
+                    }
 
                 }
             }
 
 
-            // TODO: hier noch auf zykel prüfen und mit als Ergebnis liefern
-            if (hasNegativeCycle)
+            // wenn negativer Zykel gefunden, dann steht in pred nichts sinnvolles.
+            // return mit null als zeichen, dass hier neg. Zykel vorliergt
+            if (cycleEdge != null)
             {
                 pred = null;
-
             }
 
             return pred;
+        }
+
+
+        /// <summary>
+        /// Mit der Vorgänger-Matrix die Kosten des Weges berechnen
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="graph"></param>
+        /// <param name="pred"></param>
+        /// <param name="costKey"></param>
+        public static double GetWayCost(string from, string to, IGraph graph, Dictionary<string, string> pred, string costKey)
+        {
+            double costs = 0;
+
+            // laufe rückwärts bis zum from von to aus
+            IVertex currentVertex = graph.Vertices[to];
+
+            while (currentVertex.Identifier != from)
+            {
+                var parent = pred[currentVertex.Identifier];
+                var parentVertex = graph.Vertices[parent];
+                costs += graph.GetEdge(parentVertex, currentVertex).Costs[costKey];
+                currentVertex = parentVertex;
+            }
+
+
+            return costs;
         }
 
 
@@ -274,43 +317,5 @@ namespace GraphLibrary.Algorithm
 
             return resultGraph;
         }
-
-
-
-
-
-
-
-
-
-
-        /// <summary>
-        /// Mit der Vorgänger-Matrix die Kosten des Weges berechnen
-        /// </summary>
-        /// <param name="from"></param>
-        /// <param name="to"></param>
-        /// <param name="graph"></param>
-        /// <param name="pred"></param>
-        /// <param name="costKey"></param>
-        public static double GetWayCost(string from, string to, IGraph graph, Dictionary<string, string> pred, string costKey)
-        {
-            double costs = 0;
-
-            // laufe rückwärts bis zum from von to aus
-            IVertex currentVertex = graph.Vertices[to];
-
-            while (currentVertex.Identifier != from)
-            {
-                var parent = pred[currentVertex.Identifier];
-                var parentVertex = graph.Vertices[parent];
-                costs += graph.GetEdge(parentVertex, currentVertex).Costs[costKey];
-                currentVertex = parentVertex;
-            }
-
-
-            return costs;
-        }
-
-
     }
 }
