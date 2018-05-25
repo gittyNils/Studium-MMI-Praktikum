@@ -11,6 +11,16 @@ using System.Threading.Tasks;
 
 namespace A4
 {
+    /// <summary>
+    /// Informationen für einen Testlauf in dieser Aufgabe
+    /// </summary>
+    public class TestData
+    {
+        public string Name { get; set; }
+        public string File { get; set; }
+    }
+
+
     class Program
     {
         static void Main(string[] args)
@@ -61,26 +71,38 @@ namespace A4
 
 
 
-            var sw = new System.Diagnostics.Stopwatch();
+            List<TestData> testFiles = new List<TestData>();
+
+            testFiles.Add(new TestData { Name = "G_1_2", File = @"SampleData\G_1_2.txt" });
+            testFiles.Add(new TestData { Name = "G_1_20", File = @"SampleData\G_1_20.txt" });
+            testFiles.Add(new TestData { Name = "G_1_200", File = @"SampleData\G_1_200.txt" });
+            testFiles.Add(new TestData { Name = "G_10_20", File = @"SampleData\G_10_20.txt" });
+            testFiles.Add(new TestData { Name = "G_10_200", File = @"SampleData\G_10_200.txt" });
+            testFiles.Add(new TestData { Name = "G_100_200", File = @"SampleData\G_100_200.txt" });
+
+            foreach (var test in testFiles)
+            {
+                Console.WriteLine("---------------------------------------------------------------");
+                var sw = new System.Diagnostics.Stopwatch();
 
 
-            string stringBigGraph = File.ReadAllText(@"SampleData\G_100_200.txt");
-            IGraph bigGraph = GraphFactory.GraphFromAdjListStringWithCost(stringBigGraph, "Test BIG", costName, true);
+                string s = File.ReadAllText(test.File);
+                IGraph graph = GraphFactory.GraphFromAdjListStringWithCost(s, test.Name, costName, true);
 
-            sw.Restart();
-            var big = ShortestPath.Dijkstra(bigGraph, bigGraph.Vertices.First().Key, costName);
-            sw.Stop();
-            Console.WriteLine("Dijkstra");
-            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+                var big = ShortestPath.Dijkstra(graph, graph.Vertices.First().Key, costName);
+                sw.Stop();
+                Console.WriteLine($"Dijkstra         {sw.ElapsedMilliseconds} ms");
 
 
-            sw.Restart();
-            IEdge cycleEdge;
-            big = ShortestPath.MooreBellmanFord(bigGraph, bigGraph.Vertices.First().Key, costName, out cycleEdge);
-            sw.Stop();
-            Console.WriteLine("MooreBellmanFord");
-            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+                IEdge cycleEdge;
+                big = ShortestPath.MooreBellmanFord(graph, graph.Vertices.First().Key, costName, out cycleEdge);
+                sw.Stop();
+                Console.WriteLine($"MooreBellmanFord {sw.ElapsedMilliseconds} ms");
+            }
 
+            Console.WriteLine("Done");
             Console.ReadLine();
         }
 
