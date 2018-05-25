@@ -51,6 +51,7 @@
     <Compile Include="A1\TestA1.cs" />
     <Compile Include="A2\TestA2.cs" />
     <Compile Include="A3\TestA3.cs" />
+    <Compile Include="A4\TestA4.cs" />
     <Compile Include="Basic\BasicFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -121,6 +122,18 @@
     <Content Include="A3\SampleData\K_70.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="A4\SampleData\G_1_2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A4\SampleData\Wege1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A4\SampleData\Wege2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A4\SampleData\Wege3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GraphLibrary\GraphLibrary.csproj">

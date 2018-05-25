@@ -1,8 +1,10 @@
 ﻿using GraphLibrary.Algorithm;
 using GraphLibrary.DataModel;
+using GraphLibrary.Factory;
 using GraphLibrary.Interface;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ namespace A4
         {
             var costName = "Kosten";
 
+            /*
             // Testgraph
             IGraph gTest = new Graph("Test", true);
 
@@ -54,18 +57,37 @@ namespace A4
             sw.Restart();
             var b = ShortestPath.MooreBellmanFord(gTest, "s", costName);
             sw.Stop();
+            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");*/
+
+
+
+            var sw = new System.Diagnostics.Stopwatch();
+
+
+            string stringBigGraph = File.ReadAllText(@"SampleData\G_100_200.txt");
+            IGraph bigGraph = GraphFactory.GraphFromAdjListStringWithCost(stringBigGraph, "Test BIG", costName, true);
+
+            sw.Restart();
+            var big = ShortestPath.Dijkstra(bigGraph, bigGraph.Vertices.First().Key, costName);
+            sw.Stop();
+            Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
+
+
+            sw.Restart();
+            big = ShortestPath.MooreBellmanFord(bigGraph, bigGraph.Vertices.First().Key, costName);
+            sw.Stop();
             Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 
             Console.ReadLine();
         }
 
 
-        static void AddEdgeForCost(IGraph g, string from, string to, string costName, double cost)
-        {
-            var fromVert = g.Vertices[from];
-            var toVert = g.Vertices[to];
+        //static void AddEdgeForCost(IGraph g, string from, string to, string costName, double cost)
+        //{
+        //    var fromVert = g.Vertices[from];
+        //    var toVert = g.Vertices[to];
 
-            g.AddEdge(fromVert, toVert, new Dictionary<string, double> { { costName, cost } });
-        }
+        //    g.AddEdge(fromVert, toVert, new Dictionary<string, double> { { costName, cost } });
+        //}
     }
 }

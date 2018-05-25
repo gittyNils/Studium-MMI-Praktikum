@@ -27,11 +27,31 @@ namespace GraphLibrary.Algorithm
         }
 
 
-        public static IGraph Dijkstra(IGraph graph, string startId, string costKey)
+        /// <summary>
+        /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Dijkstra-Algorithmus
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="startId"></param>
+        /// <param name="costKey"></param>
+        /// <returns></returns>
+        public static IGraph DijkstraForTree(IGraph graph, string startId, string costKey)
         {
-            // Ergebnis. Hat auch alle Knoten, die nicht erreich werden, aber dann entsprechend zu diesen keine Kanten.
-            IGraph resultGraph = new Graph($"Dijkstra of {graph.Identifier} from {startId}", graph.IsDirected);
+            var pred = Dijkstra(graph, startId, costKey);
 
+            // Ergebnis in Graph zusammenstellen
+            return BuildResultGraph(graph, pred, startId);
+        }
+
+
+        /// <summary>
+        /// Liefert die Vorgänger-Matrix von startId aus mit dem Dijkstra-Algorithmus
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="startId"></param>
+        /// <param name="costKey"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> Dijkstra(IGraph graph, string startId, string costKey)
+        {
             // Vorgänger
             Dictionary<string, string> pred = new Dictionary<string, string>();
 
@@ -45,15 +65,11 @@ namespace GraphLibrary.Algorithm
             // Initialisieren
             foreach (var vertex in graph.Vertices)
             {
-                // Ergebnisgraph mit den vorhandenen Knoten füllen
-                resultGraph.AddVertex(vertex.Value.Identifier);
-
                 // maximale Kosten eintragen
                 var node = new VertexNode { Vertex = vertex.Value };
                 q.Enqueue(node, double.PositiveInfinity);
                 fastAccessAndDist[vertex.Key] = node;
                 pred.Add(vertex.Key, null);
-
             }
 
             var startElem = fastAccessAndDist[startId];
@@ -62,14 +78,25 @@ namespace GraphLibrary.Algorithm
 
 
 
+
+
+            // Merke, welche bereits gesehen wurden, damit diese nicht nochmal betrachtet werden
+            HashSet<IVertex> seen = new HashSet<IVertex>();
+
             // Solange noch weitere Knoten erreichbar sind (wer PositiveInfinity hat ist nicht erreichbar)
             VertexNode currentFromQueue;
             while (q.Count > 0 && (currentFromQueue = q.Dequeue()).Priority < double.PositiveInfinity)
             {
                 IVertex currentVertex = currentFromQueue.Vertex;
+                seen.Add(currentVertex);
 
                 foreach (var neighbour in currentVertex.Neighbours.Values)
                 {
+                    if (seen.Contains(neighbour))
+                    {
+                        continue;
+                    }
+
                     var connectingEdge = graph.GetEdge(currentVertex, neighbour);
                     var neighbourInQueue = fastAccessAndDist[neighbour.Identifier];
 
@@ -83,33 +110,40 @@ namespace GraphLibrary.Algorithm
                 }
             }
 
-
-
-
-            // Ergebnis in Graph zusammenstellen
-            // Pred hat die Vorgänger und fastAccess noch die letzten Priorities bzw. Kosten
-            // der start kann aus dem Dictionary raus, da dieser Eintrag immer identisch ist und nicht zum resultGraph beiträgt.
-            pred.Remove(startId);
-            foreach (var elem in pred)
-            {
-                var edgeInInput = graph.GetEdge(graph.Vertices[elem.Value], graph.Vertices[elem.Key]);
-
-                var fromVertex = resultGraph.Vertices[elem.Value];
-                var toVertex = resultGraph.Vertices[elem.Key];
-                resultGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double>(edgeInInput.Costs));
-            }
-
-            return resultGraph;
+            return pred;
         }
 
 
 
 
-        public static IGraph MooreBellmanFord(IGraph graph, string startId, string costKey)
+        /// <summary>
+        /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Moore-Bellman-Ford-Algorithmus
+        /// Dieser prüft auch auf negative Zykel
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="startId"></param>
+        /// <param name="costKey"></param>
+        /// <returns></returns>
+        public static IGraph MooreBellmanFordForTree(IGraph graph, string startId, string costKey)
         {
-            // Ergebnis. Hat auch alle Knoten, die nicht erreich werden, aber dann entsprechend zu diesen keine Kanten.
-            IGraph resultGraph = new Graph($"MooreBellmanFord of {graph.Identifier} from {startId}", graph.IsDirected);
+            var pred = MooreBellmanFord(graph, startId, costKey);
 
+            // Ergebnis in Graph zusammenstellen
+            return BuildResultGraph(graph, pred, startId);
+        }
+
+
+
+        /// <summary>
+        /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Moore-Bellman-Ford-Algorithmus
+        /// Dieser prüft auch auf negative Zykel
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="startId"></param>
+        /// <param name="costKey"></param>
+        /// <returns></returns>
+        public static Dictionary<string, string> MooreBellmanFord(IGraph graph, string startId, string costKey)
+        {
             // Vorgänger
             Dictionary<string, string> pred = new Dictionary<string, string>();
             // *** DIST ***   Für jeden Knoten die bisher minimalen Kosten von startId aus ("Distanz")
@@ -118,13 +152,9 @@ namespace GraphLibrary.Algorithm
             // Initialisieren
             foreach (var vertex in graph.Vertices)
             {
-                // Ergebnisgraph mit den vorhandenen Knoten füllen
-                resultGraph.AddVertex(vertex.Value.Identifier);
-
                 // maximale Kosten eintragen
                 dist.Add(vertex.Key, double.PositiveInfinity);
                 pred.Add(vertex.Key, null);
-
             }
 
             dist[startId] = 0;
@@ -132,9 +162,19 @@ namespace GraphLibrary.Algorithm
 
 
 
-            // n-1 mal aufrühren
-            for (int i = 0; i < graph.Vertices.Count - 1; i++)
+
+            // Merker, ob sich in einer Iteration eine Änderung ergeben hat (benutzt zum Abbruch, wenn schon fertig)
+            bool changedInIteration = true;
+            bool hasNegativeCycle = false;
+
+            int counter = 0;
+            // n-1 mal aufrühren + ein mal für Prüfung auf negativen Zykel
+            // wenn keine Änderung in einer Iteration, dann Fertig und Problem gelöst.
+            while (++counter < graph.Vertices.Count && changedInIteration)
             {
+                bool lastIteration = counter == graph.Vertices.Count - 1;
+                changedInIteration = false;
+
                 // Prüfe alle Kanten
                 foreach (var edge in graph.Edges.Values)
                 {
@@ -144,29 +184,133 @@ namespace GraphLibrary.Algorithm
                     // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
                     if (dist[from] + edge.Costs[costKey] < dist[to])
                     {
+                        changedInIteration = true;
+
+                        // Die letzte iteration ist zur Prüfung auf Zykel
+                        if (lastIteration)
+                        {
+                            hasNegativeCycle = true;
+                            break;
+                        }
+
                         // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
                         dist[to] = dist[from] + edge.Costs[costKey];
                         pred[to] = from;
                     }
+
+                    //if (!graph.IsDirected)
+                    //{
+                    //    to = edge.FromVertex.Identifier;
+                    //    from = edge.ToVertex.Identifier;
+
+                    //    // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
+                    //    if (dist[from] + edge.Costs[costKey] < dist[to])
+                    //    {
+                    //        changedInIteration = true;
+
+                    //        // Die letzte iteration ist zur Prüfung auf Zykel
+                    //        if (lastIteration)
+                    //        {
+                    //            hasNegativeCycle = true;
+                    //            break;
+                    //        }
+
+                    //        // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
+                    //        dist[to] = dist[from] + edge.Costs[costKey];
+                    //        pred[to] = from;
+                    //    }
+                    //}
+
                 }
             }
 
 
-            // Ergebnis in Graph zusammenstellen
-            // Pred hat die Vorgänger und fastAccess noch die letzten Priorities bzw. Kosten
-            // der start kann aus dem Dictionary raus, da dieser Eintrag immer identisch ist und nicht zum resultGraph beiträgt.
-            pred.Remove(startId);
+            // TODO: hier noch auf zykel prüfen und mit als Ergebnis liefern
+            if (hasNegativeCycle)
+            {
+                pred = null;
+
+            }
+
+            return pred;
+        }
+
+
+        /// <summary>
+        /// Erstellt den Ergebnis-Graphen anhand der Vorgänger-Informationen
+        /// </summary>
+        /// <param name="graph">Original-Graph</param>
+        /// <param name="pred">Ergebnis als Vorgänger-Matrik</param>
+        /// <param name="startId">Knoten-ID, bei der gestartet wurde</param>
+        /// <returns></returns>
+        private static IGraph BuildResultGraph(IGraph graph, Dictionary<string, string> pred, string startId)
+        {
+            // Ergebnis. Hat auch alle Knoten, die nicht erreich werden, aber dann entsprechend zu diesen keine Kanten.
+            IGraph resultGraph = new Graph($"MooreBellmanFord of {graph.Identifier} from {startId}", graph.IsDirected);
+
+            // erst alle Knoten, die erreicht wurden hinzufügen
             foreach (var elem in pred)
             {
-                var edgeInInput = graph.GetEdge(graph.Vertices[elem.Value], graph.Vertices[elem.Key]);
-
-                var fromVertex = resultGraph.Vertices[elem.Value];
-                var toVertex = resultGraph.Vertices[elem.Key];
-                resultGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double>(edgeInInput.Costs));
+                // Wurde Knoten erreicht?
+                if (elem.Value != null)
+                {
+                    resultGraph.AddVertex(elem.Key);
+                }
             }
+
+            foreach (var elem in pred)
+            {
+                // Kanten einfügen und so den Baum bilden (Ignoriere dabei den Vorgänger des StartKnotens, der er stelbst ist.)
+                if (elem.Value != null && elem.Key != startId)
+                {
+                    var edgeInInput = graph.GetEdge(graph.Vertices[elem.Value], graph.Vertices[elem.Key]);
+
+                    var fromVertex = resultGraph.Vertices[elem.Value];
+                    var toVertex = resultGraph.Vertices[elem.Key];
+                    resultGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double>(edgeInInput.Costs));
+                }
+            }
+
 
             return resultGraph;
         }
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// Mit der Vorgänger-Matrix die Kosten des Weges berechnen
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="graph"></param>
+        /// <param name="pred"></param>
+        /// <param name="costKey"></param>
+        public static double GetWayCost(string from, string to, IGraph graph, Dictionary<string, string> pred, string costKey)
+        {
+            double costs = 0;
+
+            // laufe rückwärts bis zum from von to aus
+            IVertex currentVertex = graph.Vertices[to];
+
+            while (currentVertex.Identifier != from)
+            {
+                var parent = pred[currentVertex.Identifier];
+                var parentVertex = graph.Vertices[parent];
+                costs += graph.GetEdge(parentVertex, currentVertex).Costs[costKey];
+                currentVertex = parentVertex;
+            }
+
+
+            return costs;
+        }
+
 
     }
 }
