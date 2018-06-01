@@ -178,9 +178,6 @@ namespace GraphLibrary.Algorithm
 
 
 
-            // Merker, ob sich in einer Iteration eine Änderung ergeben hat (benutzt zum Abbruch, wenn schon fertig)
-            bool changedInIteration = true;
-
 
             // Zu untersuchende Kanten zusammenstellen
             List<IEdge> edges = new List<IEdge>();
@@ -195,6 +192,9 @@ namespace GraphLibrary.Algorithm
                 }
             }
 
+
+            // Merker, ob sich in einer Iteration eine Änderung ergeben hat (benutzt zum Abbruch, wenn schon fertig)
+            bool changedInIteration = true;
 
             int counter = 0;
             // n-1 mal aufrühren + ein mal für Prüfung auf negativen Zykel
