@@ -64,26 +64,35 @@ namespace GraphLibrary.Algorithm
                 edge.Values[FLUSS_VALUE] = 0;
             }
 
+            IGraph residualGraph = null;
+            List<IEdge> lastFAugPath = null;
             bool foundFAugmentierenderWeg;
             do
             {
                 foundFAugmentierenderWeg = false;
 
-                // Residualgraphen erstellen
-                var residualGraph = CreateResidualGraph(graph);
+                if (residualGraph == null)
+                {
+                    // Residualgraphen erstellen
+                    residualGraph = CreateResidualGraph(graph);
+                }
+                else
+                {
+                    RecycleResidualGraph(graph, residualGraph, lastFAugPath);
+                }
 
                 // Den kürzesten s,t-Weg ermitteln
-                var fAugPath = Traversing.FindPathBF(residualGraph, source.Identifier, target.Identifier);
+                lastFAugPath = Traversing.FindPathBF(residualGraph, source.Identifier, target.Identifier);
 
-                if (fAugPath != null)
+                if (lastFAugPath != null)
                 {
                     foundFAugmentierenderWeg = true;
 
                     // minimale Residualkapazität:
-                    var minResKap = fAugPath.Min(x => x.Values[KAPAZITÄT_VALUE]);
+                    var minResKap = lastFAugPath.Min(x => x.Values[KAPAZITÄT_VALUE]);
 
                     // den Fluss entlang des Weges verändern
-                    foreach (var edge in fAugPath)
+                    foreach (var edge in lastFAugPath)
                     {
                         // bei Hinrichtung addieren und bei Rückrichtung subtrahieren im Fluss des Graphen
                         // Hinrichtung?
@@ -166,14 +175,40 @@ namespace GraphLibrary.Algorithm
 
         private static void RecycleResidualGraph(IGraph graph, IGraph residualGraph, List<IEdge> lastPath)
         {
+            var edgesToRenew = new List<IEdge>();
+
             // entfernen der Edges, die von Lastpath betroffen waren. Dabei dann vermerken, dass diese wieder erneuert werden müssen
+            foreach (var edge in lastPath)
+            {
+                var oldEdge1 = residualGraph.GetEdge(edge.FromVertex, edge.ToVertex);
+                if (oldEdge1 != null)
+                {
+                    residualGraph.RemoveEdge(oldEdge1.Identifier);
+                }
+
+                var oldEdge2 = residualGraph.GetEdge(edge.ToVertex, edge.FromVertex);
+                if (oldEdge2 != null)
+                {
+                    residualGraph.RemoveEdge(oldEdge2.Identifier);
+                }
+
+                // was gibt es davon im Originalgraph? -> Dass muss ich dann wieder untersuchen und in den Residualgraph neu aufnehmen
+                IEdge edgeInOrigGraph;
+                if ((edgeInOrigGraph = graph.GetEdge(graph.Vertices[edge.FromVertex.Identifier], graph.Vertices[edge.ToVertex.Identifier])) != null)
+                {
+                    edgesToRenew.Add(edgeInOrigGraph);
+                }
+
+                if ((edgeInOrigGraph = graph.GetEdge(graph.Vertices[edge.ToVertex.Identifier], graph.Vertices[edge.FromVertex.Identifier])) != null)
+                {
+                    edgesToRenew.Add(edgeInOrigGraph);
+                }
+            }
 
 
 
-            var edgesToRenew = graph.Edges.Values;
 
-
-            // der Residual-Graph hat zu jeder Kante noch eine Rückwärts-Kante
+            // der Residual-Graph braucht noch neue Kanten für folgende Original-Kanten
             // Kanten mit der Residualkapazität = 0 fallen weg
             foreach (var edge in edgesToRenew)
             {

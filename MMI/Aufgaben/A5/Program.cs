@@ -63,14 +63,16 @@ namespace A5
 
             
 
-            string str = File.ReadAllText(@"C:\Users\NilsLP\Dropbox\GitRepo\MMI\Aufgaben\A4\SampleData\G_1_2.txt");
+            string str = File.ReadAllText(@"C:\Users\NilsLP\Dropbox\GitRepo\MMI\Aufgaben\A4\SampleData\G_100_200.txt");
             IGraph g = GraphFactory.GraphFromAdjListStringWithCost(str, "T2", kapazität, true);
 
             s = g.Vertices["0"];
             t = g.Vertices["7"];
 
+            var sw = System.Diagnostics.Stopwatch.StartNew();
             Flow.EdmondsKarp(g, s, t);
-
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds + " ms");
 
             maxFluss = Flow.ReadMaxFlow(s);
 
