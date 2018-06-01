@@ -92,6 +92,7 @@ namespace GraphLibrary.Algorithm
 
         /// <summary>
         /// Suche einen Pfad zwischen Knoten from und to mit einer Breitensuche.
+        /// Durch die Breitensuche ist der Pfad bzgl. Anzahl Kanten minimal.
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="fromId"></param>
@@ -102,11 +103,12 @@ namespace GraphLibrary.Algorithm
             IVertex toVertex = graph.Vertices[toId];
             IVertex fromVertex = graph.Vertices[fromId];
 
+
             // Vorgänger-Matrix
             Dictionary<string, string> pred = new Dictionary<string, string>();
 
             // Knoten als gesehen vermerken (in Vorgängermatrix) und direkt in die Queue einfügen
-            pred.Add(fromId, fromId);
+            pred.Add(fromVertex.Identifier, fromVertex.Identifier);
             Queue<IVertex> queue = new Queue<IVertex>();
             queue.Enqueue(fromVertex);
 

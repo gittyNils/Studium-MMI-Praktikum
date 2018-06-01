@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Algorithm\ConnectedGraphComponents.cs" />
+    <Compile Include="Algorithm\Flow.cs" />
     <Compile Include="Algorithm\MST.cs" />
     <Compile Include="Algorithm\ShortestPath.cs" />
     <Compile Include="Algorithm\Traversing.cs" />
