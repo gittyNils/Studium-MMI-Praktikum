@@ -181,6 +181,21 @@ namespace GraphLibrary.Algorithm
             // Merker, ob sich in einer Iteration eine Änderung ergeben hat (benutzt zum Abbruch, wenn schon fertig)
             bool changedInIteration = true;
 
+
+            // Zu untersuchende Kanten zusammenstellen
+            List<IEdge> edges = new List<IEdge>();
+            foreach (var edge in graph.Edges.Values)
+            {
+                edges.Add(edge);
+
+                // Wenn Graph nicht gerichtet, dann muss die Kante in beide Richtungen getestet werden
+                if (!graph.IsDirected)
+                {
+                    edges.Add(new Edge("TEMP of "+ edge.Identifier, edge.ToVertex, edge.FromVertex, edge.Costs));
+                }
+            }
+
+
             int counter = 0;
             // n-1 mal aufrühren + ein mal für Prüfung auf negativen Zykel
             // wenn keine Änderung in einer Iteration, dann Fertig und Problem gelöst.
@@ -190,7 +205,7 @@ namespace GraphLibrary.Algorithm
                 changedInIteration = false;
 
                 // Prüfe alle Kanten
-                foreach (var edge in graph.Edges.Values)
+                foreach (var edge in edges)
                 {
                     var from = edge.FromVertex.Identifier;
                     var to = edge.ToVertex.Identifier;
@@ -211,31 +226,6 @@ namespace GraphLibrary.Algorithm
                         dist[to] = dist[from] + edge.Costs[costKey];
                         pred[to] = from;
                     }
-
-                    // Wenn Graph nicht gerichtet, dann muss die Kante in beide Richtungen getestet werden
-                    if (!graph.IsDirected)
-                    {
-                        to = edge.FromVertex.Identifier;
-                        from = edge.ToVertex.Identifier;
-
-                        // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
-                        if (dist[from] + edge.Costs[costKey] < dist[to])
-                        {
-                            changedInIteration = true;
-
-                            // Die letzte iteration ist zur Prüfung auf Zykel
-                            if (lastIteration)
-                            {
-                                cycleEdge = edge;
-                                break;
-                            }
-
-                            // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
-                            dist[to] = dist[from] + edge.Costs[costKey];
-                            pred[to] = from;
-                        }
-                    }
-
                 }
             }
 
