@@ -74,7 +74,7 @@ namespace GraphLibrary.DataModel
             
 
             // Nachbarn ggf. aktualisieren
-            // Suche dem anderen Ende der Kante
+            // Suche das anderen Ende der Kante
             IVertex other = edge.GetOtherVertex(this);
 
             bool otherIsForeignN = false;
@@ -123,11 +123,52 @@ namespace GraphLibrary.DataModel
         /// </summary>
         /// <param name="edge">zu entfernene Kante</param>
         /// <param name="directed">gibt an, ob die neue Kante gerichtet ist</param>
-        public void RemoveEdge(IEdge edge)
+        public void RemoveEdge(IEdge edge, bool directed)
         {
-            // Aus beiden entfernen, wenn vorhanden
-            Neighbours.Remove(edge.Identifier);
-            ForeignNeighbours.Remove(edge.Identifier);
+            Edges.Remove(edge.Identifier);
+
+
+            // Nachbarn ggf. aktualisieren
+            // Suche das anderen Ende der Kante
+            IVertex other = edge.GetOtherVertex(this);
+
+            bool otherIsForeignN = false;
+            bool otherISN = false;
+
+            // Ermittlung, ob Neighbour und ForeignNeighbour
+
+            if (directed)
+            {
+                // Geht die Kante zu mir?
+                if (edge.ToVertex == this)
+                {
+                    // Kante zu mir, also ein ForeignNeighbour
+                    otherIsForeignN = true;
+                }
+                else
+                {
+                    // Kante von mir weg , also mein Neighbour
+                    otherISN = true;
+                }
+            }
+            else
+            {
+                // Bei nicht Directed wird in Neighbours und ForeignNeighbours eingefügt
+                otherISN = true;
+                otherIsForeignN = true;
+            }
+
+
+            // Eigentliches Hinzufügen
+            if (otherISN)
+            {
+                Neighbours.Remove(other.Identifier);
+            }
+
+            if (otherIsForeignN)
+            {
+                ForeignNeighbours.Remove(other.Identifier);
+            }
         }
 
         /// <summary>

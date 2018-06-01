@@ -150,8 +150,8 @@ namespace GraphLibrary.DataModel
 
                 // Und noch die Nachbar-/Indirekter-Nachbar-Beziehungen in den Knoten Pflegen.
                 // Das geht über die Knoten
-                edge.FromVertex.RemoveEdge(edge);
-                edge.ToVertex.RemoveEdge(edge);
+                edge.FromVertex.RemoveEdge(edge, IsDirected);
+                edge.ToVertex.RemoveEdge(edge, IsDirected);
             }
             else
             {
