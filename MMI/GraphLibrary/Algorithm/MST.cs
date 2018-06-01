@@ -46,7 +46,7 @@ namespace GraphLibrary.Algorithm
 
 
             //sortierte Edges nach Kosten
-            var sortedEdges = graph.Edges.Values.OrderBy(x => x.Costs[costKey]);
+            var sortedEdges = graph.Edges.Values.OrderBy(x => x.Values[costKey]);
 
 
             //Durchgehen und einfügen, wenn kein Kreis entsteht im Baum
@@ -87,7 +87,7 @@ namespace GraphLibrary.Algorithm
                     // Kante in MST aufnehmen
                     var from = mstGraph.Vertices[fromId];
                     var to = mstGraph.Vertices[toId];
-                    mstGraph.AddEdge(from, to, new Dictionary<string, double>(edge.Costs));
+                    mstGraph.AddEdge(from, to, new Dictionary<string, double>(edge.Values));
                 }
             }
 
@@ -122,7 +122,7 @@ namespace GraphLibrary.Algorithm
 
 
             //sortierte Edges nach Kosten
-            var sortedEdges = graph.Edges.Values.OrderBy(x => x.Costs[costKey]);
+            var sortedEdges = graph.Edges.Values.OrderBy(x => x.Values[costKey]);
 
 
             // Durchgehen und einfügen, wenn kein Kreis entsteht im Baum
@@ -145,7 +145,7 @@ namespace GraphLibrary.Algorithm
                     // Kante in MST aufnehmen
                     var from = mstGraph.Vertices[fromId];
                     var to = mstGraph.Vertices[toId];
-                    mstGraph.AddEdge(from, to, new Dictionary<string, double>(edge.Costs));
+                    mstGraph.AddEdge(from, to, new Dictionary<string, double>(edge.Values));
                 }
             }
 
@@ -224,13 +224,13 @@ namespace GraphLibrary.Algorithm
 
                     // wenn neighbour noch in der Liste der nicht besuchten ist bzw. noch nicht im MST ist
                     // und es ist noch besser als bisher von den Kosten her
-                    if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Costs[costKey] < neighbourElem.Priority)
+                    if (vertices.ContainsKey(neighbour.Key) && connectingEdge.Values[costKey] < neighbourElem.Priority)
                     {
                         // Vorgänger setzen
                         parent[neighbour.Key] = minObj.Id;
 
                         // Kosten anpassen
-                        q.UpdatePriority(neighbourElem, connectingEdge.Costs[costKey]);
+                        q.UpdatePriority(neighbourElem, connectingEdge.Values[costKey]);
                     }
                 }
             }
@@ -259,7 +259,7 @@ namespace GraphLibrary.Algorithm
 
                     var origEdge = graph.GetEdge(fromInOrig, toInOrig);
 
-                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Costs));
+                    mstGraph.AddEdge(fromInNew, toInNew, new Dictionary<string, double>(origEdge.Values));
                 }
             }
 

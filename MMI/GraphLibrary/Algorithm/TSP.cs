@@ -43,7 +43,7 @@ namespace GraphLibrary.Algorithm
             {
                 // nehme die billigste Kante zum noch nicht gesehenen Knoten
                 var useEdge = currentVertex.Edges.Where(x => isVertexSeen[x.Value.GetOtherVertex(currentVertex).Identifier] == false)
-                                    .OrderBy(x => x.Value.Costs[costKey])
+                                    .OrderBy(x => x.Value.Values[costKey])
                                     .First().Value;
 
                 // Kante hinzunehmen und aktuellen Knoten als gesehen markieren
@@ -193,7 +193,7 @@ namespace GraphLibrary.Algorithm
                 usedEdges.Add(closingEdge);
 
                 // Erstes ist bis dahin bestes oder Kosten noch günstiger
-                double costToCheck = currentCosts + closingEdge.Costs[costKey];
+                double costToCheck = currentCosts + closingEdge.Values[costKey];
                 if (/*bestWay == null || --> Da bestCost Infitite beim ersten mal*/ 
                     costToCheck < bestCost)
                 {
@@ -214,7 +214,7 @@ namespace GraphLibrary.Algorithm
                     var other = edge.GetOtherVertex(current);
                     if (seenVertices[other.Identifier] == false)
                     {
-                        double newCosts = currentCosts + edge.Costs[costKey];
+                        double newCosts = currentCosts + edge.Values[costKey];
 
                         if (!branchAndBound || (/*bestWay == null || */ newCosts < bestCost)) //Branch and Bound ggf. einschalten
                         {

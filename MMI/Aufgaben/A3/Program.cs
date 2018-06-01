@@ -84,7 +84,7 @@ namespace A3
                 Console.WriteLine(elem.Identifier);
             }
 
-            Console.WriteLine(bestWay.Sum(x => x.Costs[costName]));
+            Console.WriteLine(bestWay.Sum(x => x.Values[costName]));
             Console.WriteLine($"{sw.ElapsedMilliseconds} ms");
 
             Console.ReadLine();

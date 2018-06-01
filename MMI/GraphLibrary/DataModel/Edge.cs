@@ -31,9 +31,9 @@ namespace GraphLibrary.DataModel
 
 
         /// <summary>
-        /// Kosten an dieser Kante. Werden als Key-Value-Pair abgespeichert
+        /// Werte an dieser Kante. Werden als Key-Value-Pair abgespeichert
         /// </summary>
-        public Dictionary<string, double> Costs { get; set; }
+        public Dictionary<string, double> Values { get; set; }
 
         #endregion Properties
 
@@ -55,11 +55,11 @@ namespace GraphLibrary.DataModel
             if (costs == null)
             {
                 //Vorbelegen
-                Costs = new Dictionary<string, double>();
+                Values = new Dictionary<string, double>();
             }
             else
             {
-                Costs = costs;
+                Values = costs;
             }
         }
 

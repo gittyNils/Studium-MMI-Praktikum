@@ -107,10 +107,10 @@ namespace GraphLibrary.Algorithm
                     var neighbourInQueue = fastAccessAndDist[neighbour.Identifier];
 
                     // kann man vom aktuell betrachteten Knoten über die Kante zum Nachbarn günstiger als es bisher möglich war?
-                    if (currentFromQueue.Priority + connectingEdge.Costs[costKey] < neighbourInQueue.Priority)
+                    if (currentFromQueue.Priority + connectingEdge.Values[costKey] < neighbourInQueue.Priority)
                     {
                         // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
-                        q.UpdatePriority(neighbourInQueue, currentFromQueue.Priority + connectingEdge.Costs[costKey]);
+                        q.UpdatePriority(neighbourInQueue, currentFromQueue.Priority + connectingEdge.Values[costKey]);
                         pred[neighbour.Identifier] = currentVertex.Identifier;
                     }
                 }
@@ -188,7 +188,7 @@ namespace GraphLibrary.Algorithm
                 // Wenn Graph nicht gerichtet, dann muss die Kante in beide Richtungen getestet werden
                 if (!graph.IsDirected)
                 {
-                    edges.Add(new Edge("TEMP of "+ edge.Identifier, edge.ToVertex, edge.FromVertex, edge.Costs));
+                    edges.Add(new Edge("TEMP of "+ edge.Identifier, edge.ToVertex, edge.FromVertex, edge.Values));
                 }
             }
 
@@ -211,7 +211,7 @@ namespace GraphLibrary.Algorithm
                     var to = edge.ToVertex.Identifier;
 
                     // Nutze ich die aktuelle Kante, kann ich damit die Kosten zum Zielknoten Verbessern?
-                    if (dist[from] + edge.Costs[costKey] < dist[to])
+                    if (dist[from] + edge.Values[costKey] < dist[to])
                     {
                         changedInIteration = true;
 
@@ -223,7 +223,7 @@ namespace GraphLibrary.Algorithm
                         }
 
                         // Dann Weg über diesen nehmen und Vorgänger und Kosten aktualisieren
-                        dist[to] = dist[from] + edge.Costs[costKey];
+                        dist[to] = dist[from] + edge.Values[costKey];
                         pred[to] = from;
                     }
                 }
@@ -260,7 +260,7 @@ namespace GraphLibrary.Algorithm
             {
                 var parent = pred[currentVertex.Identifier];
                 var parentVertex = graph.Vertices[parent];
-                costs += graph.GetEdge(parentVertex, currentVertex).Costs[costKey];
+                costs += graph.GetEdge(parentVertex, currentVertex).Values[costKey];
                 currentVertex = parentVertex;
             }
 
@@ -300,7 +300,7 @@ namespace GraphLibrary.Algorithm
 
                     var fromVertex = resultGraph.Vertices[elem.Value];
                     var toVertex = resultGraph.Vertices[elem.Key];
-                    resultGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double>(edgeInInput.Costs));
+                    resultGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double>(edgeInInput.Values));
                 }
             }
 

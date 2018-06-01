@@ -51,7 +51,7 @@ namespace GraphUnitTests.A2
                 // Rechnen
                 var k = MST.Kruskal(g, costName);
 
-                var costs = k.Edges.Values.Sum(x => x.Costs[costName]);
+                var costs = k.Edges.Values.Sum(x => x.Values[costName]);
                 Assert.AreEqual(Math.Round(data.Result, 4), Math.Round(costs, 4), nameof(MST.Kruskal));
                 
                 k = MST.KruskalV1(g, costName);

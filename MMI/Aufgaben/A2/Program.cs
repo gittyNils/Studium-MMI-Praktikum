@@ -121,19 +121,19 @@ namespace A2
                 var swCalc = System.Diagnostics.Stopwatch.StartNew();
                 var k = MST.Kruskal(g, costName);
                 swCalc.Stop();
-                Console.WriteLine($"Kruskal {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
+                Console.WriteLine($"Kruskal {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Values[costName])}");
 
                 swCalc.Restart();
                 k = MST.KruskalV1(g, costName);
                 swCalc.Stop();
-                Console.WriteLine($"KruskalV1 (Dict) {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Costs[costName])}");
+                Console.WriteLine($"KruskalV1 (Dict) {swCalc.ElapsedMilliseconds} ms with ResultCost={k.Edges.Values.Sum(x => x.Values[costName])}");
                 
 
 
                 swCalc.Restart();
                 var p = MST.Prim(g, costName);
                 swCalc.Stop();
-                Console.WriteLine($"Prim {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Costs[costName])}");
+                Console.WriteLine($"Prim {swCalc.ElapsedMilliseconds} ms with ResultCost={p.Edges.Values.Sum(x => x.Values[costName])}");
             }
 
 

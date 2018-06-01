@@ -31,9 +31,9 @@ namespace GraphLibrary.Interface
 
         
         /// <summary>
-        /// Kosten an dieser Kante. Werden als Key-Value-Pair abgespeichert
+        /// Werte an dieser Kante. Werden als Key-Value-Pair abgespeichert
         /// </summary>
-        Dictionary<string, double> Costs { get; set; }
+        Dictionary<string, double> Values { get; set; }
 
         #endregion Properties
 

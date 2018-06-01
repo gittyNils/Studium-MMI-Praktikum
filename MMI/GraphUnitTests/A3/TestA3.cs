@@ -56,13 +56,13 @@ namespace GraphUnitTests.A3
                 var k = TSP.NearestNeighbour(g, costName);
 
                 Assert.IsNotNull(k, "NearestNeighbour Null");
-                var costs = k.Sum(x => x.Costs[costName]);
+                var costs = k.Sum(x => x.Values[costName]);
                 Assert.IsTrue(costs > 0, "NearestNeighbour Sum");
 
 
                 k = TSP.DoubleTree(g, costName);
                 Assert.IsNotNull(k, "DoubleTree Null");
-                costs = k.Sum(x => x.Costs[costName]);
+                costs = k.Sum(x => x.Values[costName]);
                 Assert.IsTrue(costs > 0, "DoubleTree Sum");
             }
 
@@ -70,10 +70,10 @@ namespace GraphUnitTests.A3
             string s1 = File.ReadAllText(testFiles[0].File);
             var g1 = GraphFactory.GraphFromAdjListStringWithCost(s1, testFiles[0].Name, costName, false);
             var k1 = TSP.TryAllTours(g1, costName, false);
-            Assert.AreEqual(38.41d, k1.Sum(x => x.Costs[costName]), "Alle Touren");
+            Assert.AreEqual(38.41d, k1.Sum(x => x.Values[costName]), "Alle Touren");
 
             var k2 = TSP.TryAllTours(g1, costName, true);
-            Assert.AreEqual(38.41d, k2.Sum(x => x.Costs[costName]), "Alle Touren B&B");
+            Assert.AreEqual(38.41d, k2.Sum(x => x.Values[costName]), "Alle Touren B&B");
         }
     }
 }
