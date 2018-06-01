@@ -52,6 +52,7 @@
     <Compile Include="A2\TestA2.cs" />
     <Compile Include="A3\TestA3.cs" />
     <Compile Include="A4\TestA4.cs" />
+    <Compile Include="A5\TestA5.cs" />
     <Compile Include="Basic\BasicFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
