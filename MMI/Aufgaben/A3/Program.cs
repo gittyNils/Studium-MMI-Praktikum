@@ -15,7 +15,7 @@ namespace A3
         static void Main(string[] args)
         {
 
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
 
 
             var s = File.ReadAllText(@"SampleData\K_10.txt");

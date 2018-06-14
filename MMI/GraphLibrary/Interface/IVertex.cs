@@ -36,6 +36,11 @@ namespace GraphLibrary.Interface
         /// </summary>
         Dictionary<string, IEdge> Edges { get; }
 
+        /// <summary>
+        /// Werte an diesem Knoten. Werden als Key-Value-Pair abgespeichert
+        /// </summary>
+        Dictionary<string, double> Values { get; set; }
+
         #endregion Properties
 
 

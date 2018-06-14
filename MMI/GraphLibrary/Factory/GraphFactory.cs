@@ -182,6 +182,63 @@ namespace GraphLibrary.Factory
 
 
 
+        /// <summary>
+        /// Einlesen eine Graphen von einer Adjazenzliste aus einem String mit Kostenangaben für Knoten und Kanten
+        /// </summary>
+        /// <param name="inputString">Eingabestring</param>
+        /// <param name="id">Identifier des Graphen</param>
+        /// <param name="costNameEdge">Name der Kosten an den Kanten</param>
+        /// <param name="capacityNameEdge">Name der Kapazität an den Kanten</param>
+        /// <param name="balanceNameVertex">Name der Balance an den Knoten</param>
+        /// <param name="directed">Gibt an, ob Graph gerichtet ist</param>
+        /// <param name="splitChar">Zeichen, mit dem Elemente in der Matrix in einer Zeile gesplittet wurden (Default \t)</param>
+        /// <returns></returns>
+        public static IGraph GraphFromAdjListStringWithDoubleCost(string inputString, string id, string costNameEdge, string capacityNameEdge, string balanceNameVertex, bool directed, char splitChar = '\t')
+        {
+            IGraph ret = null;
+
+            var tmpGraph = new Graph(id, directed);
+
+            // Erste Zeile ist Anzahl Knoten. Diese einfach durchnummerieren
+            using (StringReader sr = new StringReader(inputString))
+            {
+                int vertexCount = int.Parse(sr.ReadLine());
+
+                // Beginne mit Knoten 0
+                for (int i = 0; i < vertexCount; i++)
+                {
+                    string nodeCost = sr.ReadLine();
+                    double cost = double.Parse(nodeCost, CultureInfo.InvariantCulture);
+                    var dict = new Dictionary<string, double> { { balanceNameVertex, cost } };
+
+                    // Knoten Einfügen
+                    tmpGraph.AddVertex(i.ToString(), dict);
+                }
+
+                // Nun Kanten anhand der Rows. So viele, wie eben da sind
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    var elements = line.Split(splitChar);
+
+                    // vom ersten Element zum zweiten Element läuft eine Kante
+                    var from = tmpGraph.Vertices[elements[0]];
+                    var to = tmpGraph.Vertices[elements[1]];
+                    double cost = double.Parse(elements[2], CultureInfo.InvariantCulture);
+                    double capacity = double.Parse(elements[3], CultureInfo.InvariantCulture);
+                    var dict = new Dictionary<string, double> { { costNameEdge, cost }, { capacityNameEdge, capacity } };
+                    tmpGraph.AddEdge(from, to, dict);
+                }
+
+
+                ret = tmpGraph;
+            }
+
+
+            return ret;
+        }
+
+
         #endregion With Costs
 
 

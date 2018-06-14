@@ -25,7 +25,7 @@ namespace A4
     {
         static void Main(string[] args)
         {
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
 
             /*
             // Testgraph

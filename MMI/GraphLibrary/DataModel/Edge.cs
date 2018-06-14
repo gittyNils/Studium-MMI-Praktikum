@@ -45,21 +45,21 @@ namespace GraphLibrary.DataModel
         /// <param name="id">Eindeutige ID des Knotens</param>
         /// <param name="from">Von welchem Knoten</param>
         /// <param name="to">zu welchem Knoten</param>
-        /// <param name="costs">Kosten dieser Kante</param>
-        public Edge(string id, IVertex from, IVertex to, Dictionary<string, double> costs = null)
+        /// <param name="values">Kosten dieser Kante</param>
+        public Edge(string id, IVertex from, IVertex to, Dictionary<string, double> values = null)
         {
             Identifier = id;
             FromVertex = from;
             ToVertex = to;
 
-            if (costs == null)
+            if (values == null)
             {
                 //Vorbelegen
                 Values = new Dictionary<string, double>();
             }
             else
             {
-                Values = costs;
+                Values = values;
             }
         }
 

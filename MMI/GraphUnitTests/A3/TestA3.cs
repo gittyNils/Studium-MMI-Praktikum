@@ -26,7 +26,7 @@ namespace GraphUnitTests.A3
         [TestMethod]
         public void A3()
         {
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
             List<TestData> testFiles = new List<TestData>();
 
             testFiles.Add(new TestData { Name = "K_10", File = @"A3\SampleData\K_10.txt" });

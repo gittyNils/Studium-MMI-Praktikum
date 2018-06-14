@@ -117,9 +117,10 @@ namespace GraphLibrary.DataModel
         /// Hinzufügen eines Knoten mit Id
         /// </summary>
         /// <param name="id"></param>
-        public void AddVertex(string id)
+        /// <param name="values">optional: Werte am Knoten</param>
+        public void AddVertex(string id, Dictionary<string, double> values = null)
         {
-            IVertex vert = new Vertex(id);
+            IVertex vert = new Vertex(id, values);
 
             // Ist der Knoten schon da?
             if (!Vertices.ContainsKey(vert.Identifier))

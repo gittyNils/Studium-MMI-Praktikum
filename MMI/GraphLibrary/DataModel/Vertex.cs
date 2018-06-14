@@ -37,6 +37,12 @@ namespace GraphLibrary.DataModel
         /// </summary>
         public Dictionary<string, IEdge> Edges { get; private set; }
 
+
+        /// <summary>
+        /// Werte an diesem Knoten. Werden als Key-Value-Pair abgespeichert
+        /// </summary>
+        public Dictionary<string, double> Values { get; set; }
+
         #endregion Properties
 
 
@@ -46,13 +52,24 @@ namespace GraphLibrary.DataModel
         /// Standard-Konstruktur
         /// </summary>
         /// <param name="id">Eindeutige ID des Knotens</param>
-        public Vertex(string id)
+        /// <param name="values">Kosten an diesem Knoten</param>
+        public Vertex(string id, Dictionary<string, double> values = null)
         {
             Identifier = id;
 
             Neighbours = new Dictionary<string, IVertex>();
             ForeignNeighbours = new Dictionary<string, IVertex>();
             Edges = new Dictionary<string, IEdge>();
+
+            if (values == null)
+            {
+                //Vorbelegen
+                Values = new Dictionary<string, double>();
+            }
+            else
+            {
+                Values = values;
+            }
         }
 
 

@@ -15,7 +15,7 @@ namespace GraphUnitTests.A4
         [TestMethod]
         public void A4()
         {
-            string costKey = "Kosten";
+            string costKey = CONST.KOSTEN_VALUE;
             IEdge cycleEdge;
 
 

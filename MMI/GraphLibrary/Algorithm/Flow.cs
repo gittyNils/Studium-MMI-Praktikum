@@ -14,27 +14,6 @@ namespace GraphLibrary.Algorithm
     public static class Flow
     {
         /// <summary>
-        /// Key für den Value des Flusses einer Kante eines Graphen
-        /// </summary>
-        public const string FLUSS_VALUE = "Fluss";
-
-        /// <summary>
-        /// Key für den Value der Kapazität einer Kante eines Graphen
-        /// </summary>
-        public const string KAPAZITÄT_VALUE = "Kapazität";
-
-
-        /// <summary>
-        /// Richtung einer Kante. 
-        /// Gibt im Residual-Graph an, ob es sich bei einer Kante um die Originale, also die Hinrichtung, oder die Rückrichtung der Kante handelt.
-        /// Nur intern im Residualgraphen verwendet.
-        /// 1 = Hin/original, sonst Rück
-        /// </summary>
-        private const string RICHTUNG_VALUE = "Richtung";
-
-
-
-        /// <summary>
         /// Liefert auf einem Graphen mit Flüssen den maximalen Fluss (der vorher schon durch EdmondsKarp berechnet wurde).
         /// </summary>
         /// <param name="source">Source des Flusses</param>
@@ -44,7 +23,7 @@ namespace GraphLibrary.Algorithm
             var outKanten = source.Edges.Values.Where(z => z.FromVertex == source);
             var inKanten = source.Edges.Values.Except(outKanten);
 
-            var maxFluss = outKanten.Sum(z => z.Values[FLUSS_VALUE]) - inKanten.Sum(z => z.Values[FLUSS_VALUE]);
+            var maxFluss = outKanten.Sum(z => z.Values[CONST.FLUSS_VALUE]) - inKanten.Sum(z => z.Values[CONST.FLUSS_VALUE]);
             return maxFluss;
         }
 
@@ -61,7 +40,7 @@ namespace GraphLibrary.Algorithm
             // Fluss initialisieren
             foreach (var edge in graph.Edges.Values)
             {
-                edge.Values[FLUSS_VALUE] = 0;
+                edge.Values[CONST.FLUSS_VALUE] = 0;
             }
 
             IGraph residualGraph = null;
@@ -89,24 +68,24 @@ namespace GraphLibrary.Algorithm
                     foundFAugmentierenderWeg = true;
 
                     // minimale Residualkapazität:
-                    var minResKap = lastFAugPath.Min(x => x.Values[KAPAZITÄT_VALUE]);
+                    var minResKap = lastFAugPath.Min(x => x.Values[CONST.KAPAZITÄT_VALUE]);
 
                     // den Fluss entlang des Weges verändern
                     foreach (var edge in lastFAugPath)
                     {
                         // bei Hinrichtung addieren und bei Rückrichtung subtrahieren im Fluss des Graphen
                         // Hinrichtung?
-                        if (edge.Values[RICHTUNG_VALUE] == 1)
+                        if (edge.Values[CONST.RICHTUNG_VALUE] == 1)
                         {
                             // Hinrichtung
                             var edgeInGraph = graph.GetEdge(edge.FromVertex, edge.ToVertex);
-                            edgeInGraph.Values[FLUSS_VALUE] += minResKap;
+                            edgeInGraph.Values[CONST.FLUSS_VALUE] += minResKap;
                         }
                         else
                         {
                             // Rückrichtung, also die Kante im Originalgraphen mit vertauschten Vertices suchen
                             var edgeInGraph = graph.GetEdge(edge.ToVertex, edge.FromVertex);
-                            edgeInGraph.Values[FLUSS_VALUE] -= minResKap;
+                            edgeInGraph.Values[CONST.FLUSS_VALUE] -= minResKap;
                         }
                     }
                 }
@@ -139,13 +118,13 @@ namespace GraphLibrary.Algorithm
             // Kanten mit der Residualkapazität = 0 fallen weg
             foreach (var edge in graph.Edges.Values)
             {
-                var fluss = edge.Values[FLUSS_VALUE];
+                var fluss = edge.Values[CONST.FLUSS_VALUE];
                 // Korrespondierende Knoten der Kante in Residualgraph finden
                 var fromVertex = residualGraph.Vertices[edge.FromVertex.Identifier];
                 var toVertex = residualGraph.Vertices[edge.ToVertex.Identifier];
 
                 // Residualkapazität für Hin-Kante:
-                var uHin = edge.Values[KAPAZITÄT_VALUE] - fluss;
+                var uHin = edge.Values[CONST.KAPAZITÄT_VALUE] - fluss;
 
                 // Residualkapazität für Rück-Kante
                 var uRück = fluss;
@@ -155,8 +134,8 @@ namespace GraphLibrary.Algorithm
                 if (uHin > 0)
                 {
                     residualGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double> {
-                        { KAPAZITÄT_VALUE, uHin },
-                        { RICHTUNG_VALUE, 1 }
+                        { CONST.KAPAZITÄT_VALUE, uHin },
+                        { CONST.RICHTUNG_VALUE, 1 }
                     });
                 }
 
@@ -164,8 +143,8 @@ namespace GraphLibrary.Algorithm
                 if (uRück > 0)
                 {
                     residualGraph.AddEdge(toVertex, fromVertex, new Dictionary<string, double> {
-                        { KAPAZITÄT_VALUE, uRück },
-                        { RICHTUNG_VALUE, 0}
+                        { CONST.KAPAZITÄT_VALUE, uRück },
+                        { CONST.RICHTUNG_VALUE, 0}
                     });
                 }
             }
@@ -212,13 +191,13 @@ namespace GraphLibrary.Algorithm
             // Kanten mit der Residualkapazität = 0 fallen weg
             foreach (var edge in edgesToRenew)
             {
-                var fluss = edge.Values[FLUSS_VALUE];
+                var fluss = edge.Values[CONST.FLUSS_VALUE];
                 // Korrespondierende Knoten der Kante in Residualgraph finden
                 var fromVertex = residualGraph.Vertices[edge.FromVertex.Identifier];
                 var toVertex = residualGraph.Vertices[edge.ToVertex.Identifier];
 
                 // Residualkapazität für Hin-Kante:
-                var uHin = edge.Values[KAPAZITÄT_VALUE] - fluss;
+                var uHin = edge.Values[CONST.KAPAZITÄT_VALUE] - fluss;
 
                 // Residualkapazität für Rück-Kante
                 var uRück = fluss;
@@ -228,8 +207,8 @@ namespace GraphLibrary.Algorithm
                 if (uHin > 0)
                 {
                     residualGraph.AddEdge(fromVertex, toVertex, new Dictionary<string, double> {
-                        { KAPAZITÄT_VALUE, uHin },
-                        { RICHTUNG_VALUE, 1 }
+                        { CONST.KAPAZITÄT_VALUE, uHin },
+                        { CONST.RICHTUNG_VALUE, 1 }
                     });
                 }
 
@@ -237,8 +216,8 @@ namespace GraphLibrary.Algorithm
                 if (uRück > 0)
                 {
                     residualGraph.AddEdge(toVertex, fromVertex, new Dictionary<string, double> {
-                        { KAPAZITÄT_VALUE, uRück },
-                        { RICHTUNG_VALUE, 0}
+                        { CONST.KAPAZITÄT_VALUE, uRück },
+                        { CONST.RICHTUNG_VALUE, 0}
                     });
                 }
             }

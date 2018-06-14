@@ -28,7 +28,7 @@ namespace GraphUnitTests.A2
         [TestMethod]
         public void A2()
         {
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
             List<TestData> testFiles = new List<TestData>();
 
             testFiles.Add(new TestData { Name = "G_1_2", File = @"A2\SampleData\G_1_2.txt", Result = 286.7112d });

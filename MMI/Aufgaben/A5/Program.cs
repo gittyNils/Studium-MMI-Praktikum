@@ -31,8 +31,8 @@ namespace A5
             var x = graph.Vertices["x"];
             var t = graph.Vertices["t"];
 
-            string kapazität = Flow.KAPAZITÄT_VALUE;
-            string fluss = Flow.FLUSS_VALUE;
+            string kapazität = CONST.KAPAZITÄT_VALUE;
+            string fluss = CONST.FLUSS_VALUE;
 
             graph.AddEdge(s, u, new Dictionary<string, double> { { kapazität, 1 } });
             graph.AddEdge(s, w, new Dictionary<string, double> { { kapazität, 5 } });

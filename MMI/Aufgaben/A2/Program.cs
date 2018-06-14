@@ -51,7 +51,7 @@ namespace A2
             var b = MST.Kruskal(gSimple, "C");
             
 
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
 
             //var s = File.ReadAllText(@"SampleData\G_1_2.txt");
             var s = File.ReadAllText(@"SampleData\G_100_200.txt");
@@ -89,7 +89,7 @@ namespace A2
 
 
 
-            var costName = "Kosten";
+            var costName = CONST.KOSTEN_VALUE;
             List<TestData> testFiles = new List<TestData>();
 
             testFiles.Add(new TestData { Name = "G_1_2", File = @"SampleData\G_1_2.txt" });

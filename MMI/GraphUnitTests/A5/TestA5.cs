@@ -13,7 +13,7 @@ namespace GraphUnitTests.A5
         [TestMethod]
         public void A5()
         {
-            string kapazität = Flow.KAPAZITÄT_VALUE;
+            string kapazität = CONST.KAPAZITÄT_VALUE;
 
             
             var flussFile = File.ReadAllText(@"A5\SampleData\Fluss.txt");

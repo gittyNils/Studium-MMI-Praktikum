@@ -64,7 +64,8 @@ namespace GraphLibrary.Interface
         /// Hinzufügen eines Knoten mit Id
         /// </summary>
         /// <param name="identifier"></param>
-        void AddVertex(string identifier);
+        /// <param name="values">optional: Werte am Knoten</param>
+        void AddVertex(string id, Dictionary<string, double> values = null);
 
 
         /// <summary>
