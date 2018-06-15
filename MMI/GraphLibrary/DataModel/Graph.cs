@@ -59,7 +59,29 @@ namespace GraphLibrary.DataModel
 
         #region Methods
 
-        
+
+        /// <summary>
+        /// Erstellt eine Kopie des Graphen
+        /// </summary>
+        /// <returns></returns>
+        public IGraph Copy()
+        {
+            IGraph graph = new Graph("Copy of " + Identifier, IsDirected);
+
+            // Knoten
+            foreach (var vertex in Vertices.Values)
+            {
+                graph.AddVertex(vertex.Identifier, new Dictionary<string, double>(vertex.Values));
+            }
+
+            // Kanten
+            foreach (var edge in Edges.Values)
+            {
+                graph.AddEdge(graph.Vertices[edge.FromVertex.Identifier], graph.Vertices[edge.ToVertex.Identifier], new Dictionary<string, double>(edge.Values));
+            }
+            
+            return graph;
+        }
 
 
         #region Modify Graph

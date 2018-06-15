@@ -66,6 +66,9 @@ namespace GraphUnitTests.A4
             Assert.IsNull(mbf3, "4 NULL");
             Assert.IsNotNull(cycleEdge, "4 NOT NULL");
 
+            var testPath = ShortestPath.MooreBellmanFordForNegativeCycle(g3, "0", costKey);
+            Assert.AreEqual(6, testPath.Count, "4 COUNT");
+
 
 
 

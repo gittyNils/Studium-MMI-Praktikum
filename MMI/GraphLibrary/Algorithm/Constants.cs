@@ -42,5 +42,23 @@ namespace GraphLibrary.Algorithm
         /// </summary>
         public const string BALANCE_VALUE = "Balance";
 
+
+
+        /// <summary>
+        /// Key für den Value der Pseudo-Balance bei einem Knoten eines Graphen
+        /// </summary>
+        public const string PSEUDO_BALANCE_VALUE = "PseudoBalance";
+
+
+        /// <summary>
+        /// Knotenname für SuperQuelle
+        /// </summary>
+        public const string SUPER_SOURCE = "SuperSource";
+
+        /// <summary>
+        /// Knotenname für Superquele
+        /// </summary>
+        public const string SUPER_TARGET = "SuperTarget";
+
     }
 }

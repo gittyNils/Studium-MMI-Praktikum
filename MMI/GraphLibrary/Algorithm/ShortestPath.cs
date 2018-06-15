@@ -145,17 +145,67 @@ namespace GraphLibrary.Algorithm
         }
 
 
+        /// <summary>
+        /// Nutzt den Moore-Bellman-Ford Algorithmus um einen negativen Zykel zu finden.
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="startId"></param>
+        /// <param name="costKey"></param>
+        /// <returns>negativer Zykel oder null, falls keiner da</returns>
+        public static List<IEdge> MooreBellmanFordForNegativeCycle(IGraph graph, string startId, string costKey)
+        {
+            List<IEdge> ret = null;
+
+            IEdge cycleEdge;
+            var pred = MooreBellmanFord(graph, startId, costKey, out cycleEdge, true);
+
+            if (cycleEdge != null)
+            {
+                // wenn negativer Zykel gefunden, dann die Kanten ermitteln, die im Zykel sind.
+                // dazu mit Pred n Schritte rückwärts durch die Menge laufen, damit wir an einem Knoten auskommen, der auf jeden Fall in dem Zykel ist.
+                // Nun über Parent-Beziehungen so lange laufen, bis wir wieder hier auskommen und wir haben den Zykel
+                ret = new List<IEdge>();
+
+                string tmpVertex = cycleEdge.ToVertex.Identifier;
+                for (int i = 0; i < graph.Vertices.Count; i++)
+                {
+                    tmpVertex = pred[tmpVertex];
+                }
+
+                string startPoint = tmpVertex;
+                do
+                {
+                    var toVertex = graph.Vertices[tmpVertex];
+                    tmpVertex = pred[tmpVertex];
+                    var fromVertex = graph.Vertices[tmpVertex];
+
+
+                    ret.Add(graph.GetEdge(fromVertex, toVertex));
+                }
+                while (startPoint != tmpVertex);
+
+                // Liste nochmal umdrehen, damit man mit den Kanten laufen kann
+                ret.Reverse();
+
+            }
+
+
+            return ret;
+        }
+
 
         /// <summary>
         /// Bestimmt den Kürzeste-Wege-Baum von startId aus mit dem Moore-Bellman-Ford-Algorithmus
-        /// Dieser prüft auch auf negative Zykel und liefert, falls einer existiert null zurück
+        /// Dieser prüft auch auf negative Zykel und liefert, falls einer existiert null zurück (siehe auch getPredForNegCycle)
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="startId"></param>
         /// <param name="costKey"></param>
         /// <param name="cycleEdge">Falls negativer Zykel, dann wurde dies bei dieser Kante erkannt.</param>
+        /// <param name="getPredForNegCycle">Gibt an, ob die Vorgängermatrix auch bei einem Negativen Zykel zurück gegeben werden soll.
+        /// Bei false liefert der Algorithmus sonst null.</param>
         /// <returns></returns>
-        public static Dictionary<string, string> MooreBellmanFord(IGraph graph, string startId, string costKey, out IEdge cycleEdge)
+        public static Dictionary<string, string> MooreBellmanFord(IGraph graph, string startId, string costKey, out IEdge cycleEdge, bool getPredForNegCycle = false)
         {
             cycleEdge = null;
 
@@ -232,7 +282,8 @@ namespace GraphLibrary.Algorithm
 
             // wenn negativer Zykel gefunden, dann steht in pred nichts sinnvolles.
             // return mit null als zeichen, dass hier neg. Zykel vorliergt
-            if (cycleEdge != null)
+            // es sein denn anders überschrieben
+            if (cycleEdge != null && !getPredForNegCycle)
             {
                 pred = null;
             }

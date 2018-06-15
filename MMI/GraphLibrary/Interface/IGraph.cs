@@ -37,7 +37,14 @@ namespace GraphLibrary.Interface
 
 
         #region Methods
-        
+
+
+        /// <summary>
+        /// Erstellt eine Kopie des Graphen
+        /// </summary>
+        /// <returns></returns>
+        IGraph Copy();
+
 
         #region Modify Graph
 

@@ -53,6 +53,7 @@
     <Compile Include="A3\TestA3.cs" />
     <Compile Include="A4\TestA4.cs" />
     <Compile Include="A5\TestA5.cs" />
+    <Compile Include="A6\TestA6.cs" />
     <Compile Include="Basic\BasicFunction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,6 +124,21 @@
     <Content Include="A3\SampleData\K_70.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="A6\SampleData\Kostenminimal1.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A6\SampleData\Kostenminimal2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A6\SampleData\Kostenminimal3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A6\SampleData\Kostenminimal4.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A6\SampleData\Kostenminimal5.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="A5\SampleData\Fluss.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
