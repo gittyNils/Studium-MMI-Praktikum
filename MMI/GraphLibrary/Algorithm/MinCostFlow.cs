@@ -74,29 +74,30 @@ namespace GraphLibrary.Algorithm
             Flow.EdmondsKarp(graph, superSourceVert, superTargetVert);
             var maxFluss = Flow.ReadMaxFlow(superSourceVert);
 
+
+            // SuperSenke und SuperQuelle sind ab hier wieder egal
+            foreach (var source in sources)
+            {
+                var edge = graph.GetEdge(superSourceVert, source);
+                graph.RemoveEdge(edge.Identifier);
+            }
+
+            foreach (var target in targets)
+            {
+                var edge = graph.GetEdge(target, superTargetVert);
+                graph.RemoveEdge(edge.Identifier);
+            }
+
+            graph.RemoveVertex(superSource);
+            graph.RemoveVertex(superTarget);
+
+
+
             // b-Fluss existiert, wenn gleich die Summe der Source-Balancen
             if (maxFluss == sources.Sum(x => x.Values[balance]))
             {
                 ret = true;
                 bool foundCircle;
-
-
-                // SuperSenke und SuperQuelle sind ab hier wieder egal
-                foreach (var source in sources)
-                {
-                    var edge = graph.GetEdge(superSourceVert, source);
-                    graph.RemoveEdge(edge.Identifier);
-                }
-
-                foreach (var target in targets)
-                {
-                    var edge = graph.GetEdge(target, superTargetVert);
-                    graph.RemoveEdge(edge.Identifier);
-                }
-
-                graph.RemoveVertex(superSource);
-                graph.RemoveVertex(superTarget);
-
 
                 do
                 {
@@ -260,7 +261,9 @@ namespace GraphLibrary.Algorithm
             foreach (var vertex in graph.Vertices.Values)
             {
                 // Summe Fluss ausgehende Kanten - Summe Fluss eingehende Kanten
-                vertex.Values[pseudoBalance] = vertex.Neighbours.Values.Sum(x => x.Values[fluss]) - vertex.ForeignNeighbours.Values.Sum(x => x.Values[fluss]);
+                var outEdges = vertex.Edges.Values.Where(x => x.FromVertex == vertex);
+                var inEdges = vertex.Edges.Values.Where(x => x.ToVertex == vertex);                
+                vertex.Values[pseudoBalance] = outEdges.Sum(x => x.Values[fluss]) - inEdges.Sum(x => x.Values[fluss]);
 
                 if (vertex.Values[balance] > vertex.Values[pseudoBalance])
                 {
@@ -280,13 +283,89 @@ namespace GraphLibrary.Algorithm
             {
                 iterationSuccessful = false;
 
-                // Wenn Pseudo-Quelle und erreichbare -Senke existiert
+                // Wenn Pseudo-Quelle und erreichbare -Senke in Residualgraph existiert
                 if (pseudoQuellen.Count > 0 && pseudoSenken.Count > 0)
                 {
-                    var pseudoQ = pseudoQuellen[0];
+                    var pseudoQuelle = pseudoQuellen[0];
 
-                     // erreichbar und kürzester Weg direkt in einem
+                    var residualGraph = CreateResidualGraph(graph);
 
+                    // erreichbar und kürzester Weg bzl. Kosten direkt in einem. Mit M
+                    IEdge neverUsedCylceEdge; // Zykel könen nicht vorkommen
+                    var pred = ShortestPath.MooreBellmanFord(residualGraph, pseudoQuelle.Identifier, kosten, out neverUsedCylceEdge);
+
+                    // Nehme die erste erreichbare Senke. Wenn keine da, dann abbrechen
+                    IVertex pseudoSenke = null;
+                    List<IEdge> shortestPathToPseudoSenke = null;
+                    foreach (var senke in pseudoSenken)
+                    {
+                        var way = ShortestPath.GetWay(pseudoQuelle.Identifier, senke.Identifier, residualGraph, pred);
+                        if (way != null)
+                        {
+                            // erreichbar
+                            pseudoSenke = senke;
+                            shortestPathToPseudoSenke = way;
+                            break;
+                        }
+                    }
+
+
+                    // Gab es eine erreichbare PseudoSenke?
+                    if (pseudoSenke != null)
+                    {
+                        // Flusserhöhung durchführen
+                        // Wert der Flusserhöhung bestimmen
+                        var minCapacity = shortestPathToPseudoSenke.Min(x => x.Values[kapazität]);
+
+                        // Beschränkt durch Restbalance in Pseudo-Quelle und/oder Pseudo-Senke?
+                        var quelleRestBalance = pseudoQuelle.Values[balance] - pseudoQuelle.Values[pseudoBalance];
+                        var senkeRestBalance = pseudoSenke.Values[pseudoBalance] - pseudoSenke.Values[balance];
+
+                        minCapacity = Math.Min(minCapacity, Math.Min(quelleRestBalance, senkeRestBalance));
+
+                        // Wenn eine Beschränkung aktiv, dann Pseudo-Quelle und/oder -Senke entfernen
+                        if (minCapacity == quelleRestBalance)
+                        {
+                            pseudoQuellen.Remove(pseudoQuelle);
+                        }
+                        if (minCapacity == senkeRestBalance)
+                        {
+                            pseudoSenken.Remove(pseudoSenke);
+                        }
+
+
+                        foreach (var edge in shortestPathToPseudoSenke)
+                        {
+                            // bei Hinrichtung addieren und bei Rückrichtung subtrahieren im b-Fluss des Graphen
+                            // Hinrichtung?
+                            if (edge.Values[CONST.RICHTUNG_VALUE] == 1)
+                            {
+                                // Hinrichtung
+                                var edgeInGraph = graph.GetEdge(edge.FromVertex, edge.ToVertex);
+                                edgeInGraph.Values[CONST.FLUSS_VALUE] += minCapacity;
+                            }
+                            else
+                            {
+                                // Rückrichtung, also die Kante im Originalgraphen mit vertauschten Vertices suchen
+                                var edgeInGraph = graph.GetEdge(edge.ToVertex, edge.FromVertex);
+                                edgeInGraph.Values[CONST.FLUSS_VALUE] -= minCapacity;
+                            }
+                        }
+
+
+                        // Pseudo-Balance aktualisieren an Pseudo-Quelle und -Senke (dazwischen geht der Fluss rein und direkt wieder raus, also keine Veränderung)
+                        foreach (var vertex in new IVertex[] { pseudoQuelle, pseudoSenke })
+                        {
+                            // Summe Fluss ausgehende Kanten - Summe Fluss eingehende Kanten
+                            var outEdges = vertex.Edges.Values.Where(x => x.FromVertex == vertex);
+                            var inEdges = vertex.Edges.Values.Where(x => x.ToVertex == vertex);
+                            vertex.Values[pseudoBalance] = outEdges.Sum(x => x.Values[fluss]) - inEdges.Sum(x => x.Values[fluss]);
+                        }
+
+
+                        // dann war diese Iteration erfolgreich
+                        iterationSuccessful = true;
+                    }                
                 }
             }
             while (iterationSuccessful);

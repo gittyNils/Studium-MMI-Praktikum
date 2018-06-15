@@ -302,21 +302,55 @@ namespace GraphLibrary.Algorithm
         /// <param name="costKey"></param>
         public static double GetWayCost(string from, string to, IGraph graph, Dictionary<string, string> pred, string costKey)
         {
-            double costs = 0;
+
+            double costs = double.PositiveInfinity;
+
+            var way = GetWay(from, to, graph, pred);
+
+            if (way != null)
+            {
+                costs = way.Sum(x => x.Values[costKey]);
+            }
+
+            return costs;
+        }
+
+
+
+        /// <summary>
+        /// Mit der Vorgänger-Matrix den kürzesten Weg zwischen zwei Knoten bilden.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="graph"></param>
+        /// <param name="pred"></param>
+        public static List<IEdge> GetWay(string from, string to, IGraph graph, Dictionary<string, string> pred)
+        {
+            List<IEdge> way = new List<IEdge>();
 
             // laufe rückwärts bis zum from von to aus
             IVertex currentVertex = graph.Vertices[to];
 
-            while (currentVertex.Identifier != from)
+            while (pred[currentVertex.Identifier] != null && currentVertex.Identifier != from)
             {
                 var parent = pred[currentVertex.Identifier];
                 var parentVertex = graph.Vertices[parent];
-                costs += graph.GetEdge(parentVertex, currentVertex).Values[costKey];
+                way.Add(graph.GetEdge(parentVertex, currentVertex));
                 currentVertex = parentVertex;
             }
 
+            // Reihenfolge richtig drehen
+            way.Reverse();
 
-            return costs;
+            // es gibt den Weg, wenn der From-Knoten der ersten Kante der from-Knoten ist
+            // sonst gibt es den nicht
+            if (!(way.Count > 0 && way[0].FromVertex.Identifier == from))
+            {
+                // es gibt keinen Weg
+                way = null;
+            }
+
+            return way;
         }
 
 

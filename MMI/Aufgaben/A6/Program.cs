@@ -18,7 +18,7 @@ namespace A6
             string kapazität = CONST.KAPAZITÄT_VALUE;
             string balance = CONST.BALANCE_VALUE;
 
-            var s = File.ReadAllText(@"SampleData\Kostenminimal1.txt");
+            var s = File.ReadAllText(@"SampleData\Kostenminimal3.txt");
             IGraph graph = GraphFactory.GraphFromAdjListStringWithDoubleCost(s, "T1", kosten ,kapazität, balance, true);
 
             var sw = System.Diagnostics.Stopwatch.StartNew();
@@ -32,7 +32,28 @@ namespace A6
                 cost = MinCostFlow.GetFlowCost(graph);
             }
 
-            Console.WriteLine($"ok = {ok}, cost = {cost}");
+            string costString = cost == double.NegativeInfinity ? "-" : cost.ToString();
+            Console.WriteLine($"ok = {ok}, cost = {costString}");
+
+
+
+            sw.Restart();
+            ok = MinCostFlow.SuccessiveShortestPah(graph);
+            sw.Stop();
+            Console.WriteLine($"SuccessiveShortestPah {sw.ElapsedMilliseconds} ms");
+
+            cost = double.NegativeInfinity;
+            if (ok)
+            {
+                cost = MinCostFlow.GetFlowCost(graph);
+            }
+
+            costString = cost == double.NegativeInfinity ? "-" : cost.ToString();
+            Console.WriteLine($"ok = {ok}, cost = {costString}");
+
+
+            Console.ReadLine();
+
 
         }
     }

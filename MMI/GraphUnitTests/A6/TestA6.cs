@@ -30,6 +30,19 @@ namespace GraphUnitTests.A6
 
                 Assert.IsTrue(ok, "T1 CycleCanceling ok");
                 Assert.AreEqual(3, cost, "T1 CycleCanceling cost");
+
+
+
+
+                ok = MinCostFlow.SuccessiveShortestPah(graph);
+                cost = double.NegativeInfinity;
+                if (ok)
+                {
+                    cost = MinCostFlow.GetFlowCost(graph);
+                }
+
+                Assert.IsTrue(ok, "T1 SuccessiveShortestPah ok");
+                Assert.AreEqual(3, cost, "T1 SuccessiveShortestPah cost");
             }
 
 
@@ -38,12 +51,13 @@ namespace GraphUnitTests.A6
                 IGraph graph = GraphFactory.GraphFromAdjListStringWithDoubleCost(s, "T2", kosten, kapazität, balance, true);
 
                 var ok = MinCostFlow.CycleCanceling(graph);
-                double cost = double.NegativeInfinity;
-                if (ok)
-                {
-                    cost = MinCostFlow.GetFlowCost(graph);
-                }
                 Assert.IsFalse(ok, "T2 CycleCanceling ok");
+
+
+
+
+                ok = MinCostFlow.SuccessiveShortestPah(graph);
+                Assert.IsFalse(ok, "T2 SuccessiveShortestPah ok");
             }
 
             {
@@ -59,6 +73,19 @@ namespace GraphUnitTests.A6
 
                 Assert.IsTrue(ok, "T3 CycleCanceling ok");
                 Assert.AreEqual(1537, cost, "T3 CycleCanceling cost");
+
+
+
+
+                ok = MinCostFlow.SuccessiveShortestPah(graph);
+                cost = double.NegativeInfinity;
+                if (ok)
+                {
+                    cost = MinCostFlow.GetFlowCost(graph);
+                }
+
+                Assert.IsTrue(ok, "T3 SuccessiveShortestPah ok");
+                Assert.AreEqual(1537, cost, "T3 SuccessiveShortestPah cost");
             }
 
             {
@@ -74,6 +101,19 @@ namespace GraphUnitTests.A6
                 
                 Assert.IsTrue(ok, "T4 CycleCanceling ok");
                 Assert.AreEqual(0, cost, "T4 CycleCanceling cost");
+
+
+
+
+                ok = MinCostFlow.SuccessiveShortestPah(graph);
+                cost = double.NegativeInfinity;
+                if (ok)
+                {
+                    cost = MinCostFlow.GetFlowCost(graph);
+                }
+
+                Assert.IsTrue(ok, "T4 SuccessiveShortestPah ok");
+                Assert.AreEqual(0, cost, "T4 SuccessiveShortestPah cost");
             }
 
             {
@@ -89,6 +129,19 @@ namespace GraphUnitTests.A6
 
                 Assert.IsTrue(ok, "T5 CycleCanceling ok");
                 Assert.AreEqual(0, cost, "T5 CycleCanceling cost");
+
+
+
+
+                ok = MinCostFlow.SuccessiveShortestPah(graph);
+                cost = double.NegativeInfinity;
+                if (ok)
+                {
+                    cost = MinCostFlow.GetFlowCost(graph);
+                }
+
+                Assert.IsTrue(ok, "T5 SuccessiveShortestPah ok");
+                Assert.AreEqual(0, cost, "T5 SuccessiveShortestPah cost");
             }
 
         }
