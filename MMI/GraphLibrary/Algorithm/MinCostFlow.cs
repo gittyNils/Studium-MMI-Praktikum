@@ -277,6 +277,12 @@ namespace GraphLibrary.Algorithm
                 }
             }
 
+
+
+
+
+
+
             bool iterationSuccessful;
 
             do
@@ -290,11 +296,11 @@ namespace GraphLibrary.Algorithm
 
                     var residualGraph = CreateResidualGraph(graph);
 
-                    // erreichbar und kürzester Weg bzl. Kosten direkt in einem. Mit M
+                    // erreichbar und kürzester Weg bzgl. Kosten direkt in einem. Mit MooreBellmanFord, da auch negative Gewichte möglich
                     IEdge neverUsedCylceEdge; // Zykel könen nicht vorkommen
                     var pred = ShortestPath.MooreBellmanFord(residualGraph, pseudoQuelle.Identifier, kosten, out neverUsedCylceEdge);
 
-                    // Nehme die erste erreichbare Senke. Wenn keine da, dann abbrechen
+                    // Suche eine erste erreichbare Pseudo-Senke
                     IVertex pseudoSenke = null;
                     List<IEdge> shortestPathToPseudoSenke = null;
                     foreach (var senke in pseudoSenken)
