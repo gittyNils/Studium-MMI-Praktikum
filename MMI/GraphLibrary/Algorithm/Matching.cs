@@ -47,7 +47,7 @@ namespace GraphLibrary.Algorithm
 
 
             // Matchings in Liste tun
-            // Alle Kanten von Menge A zu Menge B mit dem Fluss = 1
+            // Alle Kanten mit dem Fluss = 1
             foreach (var vertex in setA)
             {
                 var vertInTmpGraph = tmpGraph.Vertices[vertex.Identifier];
