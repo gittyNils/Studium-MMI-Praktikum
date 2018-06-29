@@ -242,6 +242,53 @@ namespace GraphLibrary.Factory
         #endregion With Costs
 
 
+        #region Bipartit
+
+        public static IGraph BipartitGraphFromAdjListString(string inputString, string id, bool directed, out List<IVertex> setA, out List<IVertex> setB, char splitChar = '\t')
+        {
+            IGraph ret = null;
+            setA = new List<IVertex>();
+            setB = new List<IVertex>();
+
+            var tmpGraph = new Graph(id, directed);
+
+            // Erste Zeile ist Anzahl Knoten. Diese einfach durchnummerieren
+            using (StringReader sr = new StringReader(inputString))
+            {
+                int vertexCount = int.Parse(sr.ReadLine());
+
+                FillGraphWithXElements(tmpGraph, vertexCount);
+
+                // Einlesen, wie viele in der ersten Menge sind
+                int vertexCountInFirstSet = int.Parse(sr.ReadLine());
+
+                // Nun Kanten anhand der Rows. So viele, wie eben da sind
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    var elements = line.Split(splitChar);
+
+                    // vom ersten Element zum zweiten Element läuft eine Kante
+                    var from = tmpGraph.Vertices[elements[0]];
+                    var to = tmpGraph.Vertices[elements[1]];
+                    tmpGraph.AddEdge(from, to);
+                }
+
+                // Menge A und B füllen
+                setA = tmpGraph.Vertices.Values.Take(vertexCountInFirstSet).ToList();
+                setB = tmpGraph.Vertices.Values.Except(setA).ToList();
+
+                ret = tmpGraph;
+            }
+
+
+            return ret;
+        }
+
+
+        #endregion Bipartit
+
+
 
 
         #region Helper
